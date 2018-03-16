@@ -34,15 +34,20 @@ import transaction from '@/base/transaction'
 import record from '@/base/record'
 //我的
 import userIndex from '@/base/userIndex'
+import {pageHeight} from '../common/js/common.js'
 export default {
     components:{
         iFooter,
         market,
         transaction,
         record,
-        userIndex
+        userIndex,
+        pageHeight
     },
     name:'index',
+    mounted(){
+        pageHeight('.content')
+    },
     data(){
         return{
             node:'0'
@@ -60,5 +65,7 @@ export default {
 @import '../common/css/common.less';
     .content{
         .getPadding;
+        box-sizing: border-box;
+        background: @bgGray;
     }
 </style>

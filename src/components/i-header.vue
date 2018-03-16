@@ -11,6 +11,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import '../common/css/common.less';
     .header{
         position: fixed;
         top:0;
@@ -21,6 +22,7 @@ export default {
         text-align:center;
         line-height: 44px;
         font-size:18px;
+        .bottomRim;
         
     }
 </style>
