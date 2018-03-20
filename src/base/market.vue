@@ -23,9 +23,11 @@
               </ul>
           </li>
       </ul>
-      <div class="more">
-          <i class="fa fa-plus-circle"></i>
-      </div>
+      <router-link :to="{path:'/proListChange'}">
+        <div class="more">
+            <i class="fa fa-plus-circle"></i>
+        </div>
+      </router-link>
   </div>
 </template>
 

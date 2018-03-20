@@ -36,7 +36,7 @@
 import iHeader from '@/components/i-header'
 export default {
     components:{
-        iHeader
+        iHeader,
     },
     data(){
         return{

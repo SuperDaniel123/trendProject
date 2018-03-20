@@ -8,10 +8,24 @@
               <p>(18675766521)</p>
           </div>
           <div class="btn">
-              <input type="button" value="充值" />
-              <input type="button" value="提现" />
+              <router-link to="/recharge">
+                  <input type="button" value="充值" />
+              </router-link>
+              <router-link to="/withdraw">
+                <input type="button" value="提现" />
+              </router-link>
           </div>
       </div>
+      <div class="line"></div>
+      <ul class="common-line">
+          <li>实名认证</li>
+          <router-link to="/bankCard"><li>我的银行卡</li></router-link>
+      </ul>
+      <div class="line"></div>
+      <ul class="common-line">
+          <li>修改登录密码</li>
+          <li>修改支付密码</li>
+      </ul>
   </div>
 </template>
 
@@ -37,7 +51,7 @@ export default {
     height:7rem;
     box-sizing: border-box;
     padding:1rem 1rem 1rem 7rem;
-    background: @white;
+    .moreBg;
     .headPortrait{
         position: absolute;
         top:1rem;
@@ -70,6 +84,15 @@ export default {
             margin:0 0.5rem;
             .border-radius;
         }
+    }
+}
+.line{
+    .e-line;
+}
+.common-line{
+    width:100%;
+    li{
+        .lineStyle;
     }
 }
 </style>

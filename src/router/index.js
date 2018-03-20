@@ -3,6 +3,10 @@ import Router from 'vue-router'
 import root from '@/base/rootLayer'
 import index from '@/base/index'
 import HelloWorld from '@/components/HelloWorld'
+import proListChange from '@/base/proListChange'
+import recharge from '@/base/recharge'
+import withdraw from '@/base/withdraw'
+import bankCard from '@/base/bankCard'
 
 Router.prototype.goBack = function () {
   this.isBack = true
@@ -21,6 +25,26 @@ export default new Router({
           path:'/',
           name:'index',
           component:index
+        },
+        {
+          path:'/proListChange',
+          name:'proListChange',
+          component:proListChange
+        },
+        {
+          path:'/recharge',
+          name:'recharge',
+          component:recharge
+        },
+        {
+          path:'/withdraw',
+          name:'withdraw',
+          component:withdraw
+        },
+        {
+          path:'/bankCard',
+          name:'bankCard',
+          component:bankCard
         },
         {
           path:'/hello',
