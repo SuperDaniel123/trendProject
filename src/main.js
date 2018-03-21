@@ -7,6 +7,8 @@ import FastClick from 'fastclick'
 import '@/common/css/style.css'
 import '@/common/font/font-awesome/css/font-awesome.min.css'
 
+import  { AlertPlugin } from 'vux'
+Vue.use(AlertPlugin)
 
 Vue.config.productionTip = false
 FastClick.attach(document.body)

@@ -57,8 +57,7 @@ export default {
         input[type="button"]{
             background: @blue;
             color:@white;
-            padding:0.8rem 3rem;
-            .border-radius;
+            .btnBig;
         }
     }
 }

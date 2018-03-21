@@ -23,8 +23,9 @@
       </ul>
       <div class="line"></div>
       <ul class="common-line">
-          <li>修改登录密码</li>
-          <li>修改支付密码</li>
+          <router-link to="/password"><li>修改登录密码</li></router-link>
+          <router-link to="/password"><li>修改支付密码</li></router-link>
+          
       </ul>
   </div>
 </template>
