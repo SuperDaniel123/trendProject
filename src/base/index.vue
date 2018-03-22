@@ -63,8 +63,4 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-    .content{
-        .getPadding;
-        box-sizing: border-box;
-    }
 </style>

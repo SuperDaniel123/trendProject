@@ -3,7 +3,7 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
-          <li v-for="(item,index) in this.mklist" :key='index' :class="[item.state == 0? 'rise':'fall']" >
+          <li v-for="(item,index) in this.mklist" :key='index' :class="[item.state == 0? 'rise':'fall']" @click="getPush" >
               <div class="title">
                   <h2 v-text="item.name"></h2>
                   <span>点差:{{item.difference}}</span>
@@ -61,6 +61,17 @@ export default {
                 mix:'1.21989',
                 state:1,
             }]
+        }
+    },
+    methods:{
+        getPush(){
+            this.$router.push({
+                path:'/quotation',
+                query: {
+                    num:1,
+                    die:2
+                } 
+            })
         }
     }
 }

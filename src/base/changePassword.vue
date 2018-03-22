@@ -2,7 +2,7 @@
   <div>
       <back-header :headline="headline"></back-header>
       <div class="content">
-          <ul class="passList">
+          <ul class="commonList">
               <li><span>原密码：</span><input type="password" placeholder="请输入原密码" v-model="oldcode" /></li>
               <li><span>新密码：</span><input type="password" placeholder="请输入新密码" v-model="newcode"/></li>
               <li><span>确认密码：</span><input type="password" placeholder="请在输入一遍新密码" v-model="affirm" /></li>
@@ -56,42 +56,7 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-.content{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-}
-.passList{
-    li{
-        line-height: 3rem;
-        margin-top:0.5rem;
-        background: @white;
-        font-size:@font1-25;
-        display: flex;
-        padding:0 1rem;
-        box-sizing: border-box;
-        span{
-            width:7rem;
-        }
-        input{
-            flex: 1;
-            line-height:3rem;
-            color:@font-Sgray;
-            font-family: '微软雅黑'
-        }
-        input::placeholder{
-            color:@font-Sgray;
-        }
-    }
-}
-.boundbtn{
-    margin-top:2rem;
-    text-align:center;
-    button{
-        background: @blue;
-        color:@white;
-        .btnBig;
-    }
-}
+
+
 </style>
 

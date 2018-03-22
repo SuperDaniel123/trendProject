@@ -2,7 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import root from '@/base/rootLayer'
 import index from '@/base/index'
-import HelloWorld from '@/components/HelloWorld'
+//预存记录
+import recordList from '@/base/recordList'
 //添加产品
 import proListChange from '@/base/proListChange'
 //提现
@@ -15,6 +16,14 @@ import bankCard from '@/base/bankCard'
 import addCard from '@/base/addCard'
 //修改密码
 import password from '@/base/changePassword'
+//实名认证
+import autonym from '@/base/autonym'
+//个人信息
+import personal from '@/base/personal'
+//股票详情
+import quotation from '@/base/quotation'
+
+
 
 Router.prototype.goBack = function () {
   this.isBack = true
@@ -65,9 +74,24 @@ export default new Router({
           component:password
         },
         {
-          path:'/hello',
-          name:'HelloWorld',
-          component:HelloWorld
+          path:'/autonym',
+          name:'autonym',
+          component:autonym
+        },
+        {
+          path:'/personal',
+          name:'personal',
+          component:personal
+        },
+        {
+          path:'/quotation',
+          name:'quotation',
+          component:quotation
+        },
+        {
+          path:'/recordList',
+          name:'recordList',
+          component:recordList
         },
 
       ]

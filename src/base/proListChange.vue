@@ -109,16 +109,11 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-.content{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-    .title{
-        height:2rem;
-        line-height: 2rem;
-        text-indent: @font1;
-        font-size:@font1;
-    }
+.title{
+    height:2rem;
+    line-height: 2rem;
+    text-indent: @font1;
+    font-size:@font1;
 }
 .common{
     .conLine{

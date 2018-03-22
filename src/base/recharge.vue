@@ -1,7 +1,7 @@
 <template>
   <div>
       <back-header :headline="headline"></back-header>
-      <div class="contentD">
+      <div class="content">
           <div class="recbox">
                 <!-- <div class="elect clearfix">
                   <h2>微信充值</h2>
@@ -12,8 +12,8 @@
                     <input type="phone" placeholder="请输入金额（最小金额138元）" value="">
                 </div>
           </div>
-          <div class="botton">
-              <input type="button" value="下一步" />
+          <div class="boundbtn">
+              <button>下一步</button>
           </div>
       </div>
   </div>
@@ -29,7 +29,7 @@ export default {
       PopupPicker
   },
   mounted(){
-    pageHeight('.contentD')
+    pageHeight('.content')
   },
   data(){
       return{
@@ -47,20 +47,6 @@ export default {
 
 <style lang="less" >
 @import '../common/css/common.less';
-.contentD{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-    .botton{
-        text-align: center;
-        margin-top:2rem;
-        input[type="button"]{
-            background: @blue;
-            color:@white;
-            .btnBig;
-        }
-    }
-}
 .recbox{
     margin:1rem;
     background: @white;

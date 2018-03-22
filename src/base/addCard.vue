@@ -69,11 +69,6 @@ export default {
 
 <style lang="less">
 @import '../common/css/common.less';
-.content{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-}
 .ulTeams{
     li{
         line-height: 3rem;
@@ -111,15 +106,6 @@ export default {
             width:auto;
             padding-right:2rem;
         }
-    }
-}
-.boundbtn{
-    margin-top:2rem;
-    text-align:center;
-    button{
-        background: @blue;
-        color:@white;
-        .btnBig;
     }
 }
 

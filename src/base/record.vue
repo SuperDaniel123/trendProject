@@ -13,7 +13,7 @@
               <li class="clearfix">2018年3月5日<span>存入:1000元</span></li>
               <li class="clearfix">2018年3月5日<span>存入:1000元</span></li>
               <div class="more clearfix">
-                  <span>查看更多<i class="fa fa-caret-down"></i></span>
+                  <router-link to="/recordList"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
           </ul>
       </div>
@@ -32,7 +32,7 @@
                   </div>
               </li>
               <div class="more clearfix">
-                  <span>查看更多<i class="fa fa-caret-down"></i></span>
+                  <router-link to="/recordList"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
           </ul>
       </div>

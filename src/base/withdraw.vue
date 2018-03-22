@@ -1,7 +1,7 @@
 <template>
   <div>
       <back-header :headline="headline"></back-header>
-      <div class="contentD">
+      <div class="content">
           <div class="recbox">
                 <!-- <div class="elect clearfix">
                   <h2>微信充值</h2>
@@ -13,8 +13,8 @@
                 </div>
           </div>
           <p class="payText">余额 ￥{{this.allPay}}，<span @click="getAll">全部提现</span></p>
-          <div class="botton">
-              <input type="button" value="下一步" />
+          <div class="boundbtn">
+              <button>下一步</button>
           </div>
       </div>
   </div>
@@ -30,7 +30,7 @@ export default {
       PopupPicker
   },
   mounted(){
-    pageHeight('.contentD')
+    pageHeight('.content')
   },
   data(){
       return{
@@ -53,26 +53,13 @@ export default {
 
 <style lang="less" >
 @import '../common/css/common.less';
-.contentD{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-    .botton{
-        text-align: center;
-        margin-top:2rem;
-        input[type="button"]{
-            background: @blue;
-            color:@white;
-            .btnBig;
-        }
-    }
-    .payText{
-        padding:0 1rem;
-        font-size:@font1;
-        color:@font-Sgray;
-        span{
-            color:@blue;
-        }
+
+.payText{
+    padding:0 1rem;
+    font-size:@font1;
+    color:@font-Sgray;
+    span{
+        color:@blue;
     }
 }
 .recbox{
@@ -130,7 +117,6 @@ export default {
                 color:#bababa;
             }
     }
-
 
 }
     .vux-popup-header-right{

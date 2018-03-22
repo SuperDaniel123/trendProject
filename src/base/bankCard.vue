@@ -8,7 +8,7 @@
                 <b v-text="item.encrypt"></b>
             </li>
         </ul>
-        <div class="addition">
+        <div class="boundbtn">
             <router-link to="/addCard">
                 <button>添加</button>
             </router-link>
@@ -92,13 +92,8 @@ import backHeader from '@/components/back-header'
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-.content{
-    .getPadding;
-    box-sizing: border-box;
-    background: @bgGray;
-}
 .cardList{
-    padding:1rem;
+    padding:1rem 1rem 0 1rem;
     li{
         position: relative;
         margin-bottom: @font1;
@@ -115,15 +110,6 @@ import backHeader from '@/components/back-header'
         }
     }
 }
-.addition{
-    width:100%;
-    text-align: center;
-    button{
-        background: @blue;
-        color:@white;
-        .btnBig;
-        .border-radius;
-    }
-}
+
 </style>
 
