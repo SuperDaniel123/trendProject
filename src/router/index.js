@@ -22,7 +22,8 @@ import autonym from '@/base/autonym'
 import personal from '@/base/personal'
 //股票详情
 import quotation from '@/base/quotation'
-
+//login
+import login from '@/base/login'
 
 
 Router.prototype.goBack = function () {
@@ -93,8 +94,12 @@ export default new Router({
           name:'recordList',
           component:recordList
         },
-
       ]
+    },
+    {
+      path:'/login',
+      name:'login',
+      component:login
     }
   ]
 })

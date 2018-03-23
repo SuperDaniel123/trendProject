@@ -1,10 +1,12 @@
 <template>
   <div class="recordList">
     <back-header :headline="headline"></back-header>
-    <div class="content">
+    <div class="content" style="padding-bottom:0;">
       <div class="line"></div>
       <!--线图占位-->
-      <div id="echarts"></div>
+      <div id="echarts">
+        <geail-charts></geail-charts>
+      </div>
 
       <div class="timeTab">
         <checker v-model="frameValue" default-item-class="check-item" selected-item-class="check-item-selected">
@@ -19,8 +21,13 @@
           <tab-item @on-item-click="getData">卖出</tab-item>
         </tab>
 
-        <div v-if="this.buysNode == 0">1</div>
-        <div v-if="this.buysNode == 1">2</div>
+        <div v-if="this.buysNode == 0">
+          <quotation-dest :deal="this.buysNode"></quotation-dest>
+
+        </div>
+        <div v-if="this.buysNode == 1">
+          <quotation-dest :deal="this.buysNode"></quotation-dest>
+        </div>
       </div>
       
     </div>
@@ -29,7 +36,9 @@
 
 <script>
 import backHeader from '@/components/back-header'
+import quotationDest from '@/components/quotationDest'
 import { Checker, CheckerItem, Tab, TabItem} from 'vux'
+import geailCharts from '@/components/grailCharts'
 export default {
   name: 'recordList',
   components:{
@@ -37,7 +46,9 @@ export default {
     Checker, 
     CheckerItem,
     Tab,
-    TabItem
+    TabItem,
+    quotationDest,
+    geailCharts
   },
   mounted(){
     // this.$router.query.num
@@ -112,7 +123,7 @@ export default {
 }
 
 .buyTeams{
-
+  background:@white;
 
 }
 </style>
