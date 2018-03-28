@@ -3,7 +3,11 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
-          <li class="clearfix" v-for="(item,index) in this.property" :key="index">{{item.title}}<span v-text="item.num"></span></li>
+          <li class="clearfix">利润：<span v-text="property.Bid"></span></li>
+          <li class="clearfix">信用：<span v-text="property.Point"></span></li>
+          <li class="clearfix">入金：<span v-text="property.fBalance"></span></li>
+          <li class="clearfix">出金：<span v-text="property.wBalance"></span></li>
+          <li class="clearfix">结余：<span v-text="property.aBalance"></span></li>
       </ul>
       <div class="recordOther">
           <h2>预存记录</h2>
@@ -42,10 +46,19 @@
 <script>
 import iHeader from '@/components/i-header'
 import {timestamp} from '@/common/js/common.js'
+import {mapGetters} from 'vuex'
 export default {
     components:{
         iHeader,
         timestamp
+    },
+    computed:{
+        ...mapGetters(['setMID'])
+    },
+    created(){
+        this.userFund()
+        this.getRecharge()
+        
     },
     mounted(){
         this.timer()
@@ -53,13 +66,8 @@ export default {
     data(){
         return{
             headline:'记录',
-            property:[
-                {title:'利润',num:0.00},
-                {title:'信用',num:0.00},
-                {title:'入金',num:100000.00},
-                {title:'出金',num:0.00},
-                {title:'结余',num:10000.00},
-            ],
+            property:[],
+            recharge:[],
             trecord:[
         　　　　{
         　　　　　　OrderID:"6327c8be806cd0f7bd145c378768c88d",
@@ -74,7 +82,7 @@ export default {
         　　　　　　LoginID:"13360312127",
         　　　　　　Code:"XAUUSD",
         　　　　　　Name:"黄金",
-        　　　　　　PayType:"1",
+        　　　　　　PayType:"1", 
         　　　　　　Quantity:"1",
         　　　　　　OrderFee:"80.00",
         　　　　　　StopLoss:"1000",
@@ -96,6 +104,35 @@ export default {
         }
     },
     methods:{
+        //个人资金
+        userFund(){
+            this.$ajax('/account/balance','post',{MID:this.setMID}).then(res=>{
+                if(res.status != 200){
+                    console.log('error!')
+                    return
+                }
+                this.property = res.data.Data
+            })
+        },
+        //充值记录
+        getRecharge(){
+            let opt ={
+                MID:this.setMID,
+                Page:1,
+                Limit:4,
+                StartTime: '2017-01-01',
+                EndTime: '2017-12-30',
+            }
+            this.$ajax('/deposit/list','post',opt).then(res=>{
+                if(res.status != 200){
+                    console.log('error!')
+                    return
+                }
+                this.recharge = res.data.Data
+                console.log(this.recharge)
+            })
+        },
+        //添加状态
         timer(){
             let elemt = this.trecord;
             for(let i = 0; i <elemt.length; i++){
@@ -104,6 +141,7 @@ export default {
             }
             this.trecord = elemt
         },
+
         getShow(i){
             this.trecord[i].state = !this.trecord[i].state;
         }

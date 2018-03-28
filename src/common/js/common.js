@@ -10,14 +10,22 @@ function timestamp(time){
     let date = new Date(time * 1000);
     let Y = date.getFullYear() + '-';
     let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
-    let D = date.getDate() + ' ';
+    let D = date.getDate() + '  ';
     let h = date.getHours() + ':';
-    let m = date.getMinutes() + ':';
+    let m = date.getMinutes();
+    if(m < 10){
+        m = "0" + m  + ':'
+    }else{
+        m  + ':'
+    }
     let s = date.getSeconds(); 
+    if(s < 10){
+        s = "0" + s
+    }
     return Y+M+D+h+m+s
 }
 
 export {
     pageHeight,
-    timestamp
+    timestamp,
 }

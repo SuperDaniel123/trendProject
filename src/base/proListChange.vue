@@ -37,6 +37,7 @@
 import backHeader from '@/components/back-header'
 import {pageHeight} from '../common/js/common.js'
 import { Swipeout, SwipeoutItem, SwipeoutButton} from 'vux'
+import {mapGetters} from 'vuex'
 export default {
     components:{
         backHeader,
@@ -45,61 +46,81 @@ export default {
         SwipeoutItem, 
         SwipeoutButton
     },
+    computed:{
+      ...mapGetters(['setMID']),
+    },
+    created(){
+        this.getStock()
+    },
     mounted(){
         pageHeight('.content')
     },
     data(){
         return{
             headline:'增加股票',
-            plusStock:[
-                {
-                    AcrossFee:"80",
-                    Code:"XAG_USD",
-                    Deposit:"100",
-                    Fee:"80",
-                    ItemID:"00b62e9d9294f9b8e57922ab5e2b0d5f",
-                    Leverage:"1",
-                    MinFluctuation:"0.01",
-                    Name:"白银",
-                    Order:"0",
-                    Quantity:{min: 1, max: 5},
-                    Status:"0",
-                    StopLoss:false,
-                    TakeProfit:false
-                },
-                {
-                    AcrossFee:"80",
-                    Code:"XAG_USD",
-                    Deposit:"100",
-                    Fee:"80",
-                    ItemID:"00b62e9d9294f9b8e57922ab5e2b0d5f",
-                    Leverage:"1",
-                    MinFluctuation:"0.01",
-                    Name:"黄金",
-                    Order:"0",
-                    Quantity:{min: 1, max: 5},
-                    Status:"0",
-                    StopLoss:false,
-                    TakeProfit:false
-                }
-            ],
-            minusStock:[
-                {
-                    Name:'美元'
-                }
-            ],
+            plusStock:[],
+            minusStock:[],
+            codeStr:''
         }
     },
+    
     methods:{
+        getStock(){
+            this.$ajax('/trade/game','post',{MID:this.setMID}).then(res=>{
+                if(res.data.ResultCD != 200){
+                    console.log('error!')
+                    return
+                }
+                let list = res.data.Data
+                let stock = []
+                if(!localStorage.getItem('code')){
+                    this.plusStock = list;
+                    this.minusStock = stock
+                    return
+                }
+                this.codeStr = localStorage.getItem('code')
+                let localCode = this.codeStr.split(' ')
+                
+                
+                for(let i = 0; i <list.length; i++){
+                    for (let j = 0; j<localCode.length; j++){
+                        if(list[i] && list[i]['Code'] == localCode[j]){
+                            stock.push(list[i])
+                            list.splice(i,1)
+                        }
+                    }
+                }
+                this.plusStock = list;
+                this.minusStock = stock
+
+            })
+        },
         //删除
         onDelClick (id) {
             this.minusStock.push(this.plusStock[id])
+            if(this.codeStr == ''){
+                this.codeStr += this.plusStock[id]['Code']
+            }else{
+                this.codeStr += ' ' + this.plusStock[id]['Code']
+            }
+            
+            localStorage.setItem('code',this.codeStr)
             this.plusStock.splice(id,1);
 
         },
         //添加
         getPlus(id){
             this.plusStock.push(this.minusStock[id])
+            let eCode = this.codeStr.split(' ')
+            for(let i = 0; i<eCode.length; i++){
+                let c;
+                if(this.minusStock[id]['Code']== eCode[i]){
+                    eCode.splice(i,1)
+                    c = eCode.join(' ')
+                    this.codeStr = c;
+                    localStorage.setItem('code',c)
+                }
+            }
             this.minusStock.splice(id,1);
         }
     }

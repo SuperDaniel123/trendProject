@@ -1,0 +1,21 @@
+import * as types from "./mutation-types"
+
+const mutations = {
+    //MID
+    [types.SET_MID](state,setMID){
+        state.MID = setMID
+    },
+
+    //登录状态
+    [types.IS_LOGIN](state,login){
+        state.isLogin = login
+    },
+
+    // [types.MK_LIST](state,list){
+    //     state.mkList = list
+    // },
+
+
+}
+
+export default mutations

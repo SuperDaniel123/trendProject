@@ -14,18 +14,70 @@
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
     name:'login',
     data(){
-        return{
+        return{ 
             userPhone:'',
-            password:''
+            password:'',
+            facility:'iphone',
+            ip:'127.0.0.1'
         }
     },
+    created(){
+
+    },
     methods:{
+        ...mapMutations({
+            setMID:'SET_MID',
+            isLogin:'IS_LOGIN'
+        }),
         getLogin(){
-            this.$router.push({
-                path:'/'
+            let opt = {
+                LoginID:this.userPhone,
+                LoginPwd:this.password,
+                LoginDev:this.facility,
+                LoginIP:this.ip
+            }
+            this.$ajax('/login','post',opt).then(res=>{
+                let data = res.data;
+                if(this.userPhone == ''){
+                    this.$vux.alert.show({
+                        content:'请输入用户名'
+                    })
+                    return;
+                }else if(this.password == ''){
+                    this.$vux.alert.show({
+                        content:'密码不能为空'
+                    })
+                    return;
+                }
+
+                switch(data.ResultCD){
+                    case -3:{ 
+                            this.$vux.alert.show({
+                                content:'用户名长或密码长度不正确'
+                            })
+                            break;
+                        }
+                    
+                    case "4129":{
+                        this.$vux.alert.show({
+                            content:data.ErrorMsg
+                        })
+                        break;
+                    }
+
+                    default:{
+                        sessionStorage.setItem('MID',data.Data.MID)
+                        this.isLogin(true);
+                        this.setMID(sessionStorage.getItem('MID'));
+                        this.$router.push({
+                            path:'/'
+                        })
+                    }
+                }
             })
         }
     }

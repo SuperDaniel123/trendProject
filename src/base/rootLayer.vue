@@ -1,9 +1,9 @@
 <template>
   <div>
     <transition :name="transitionName">
-      <keep-alive>
+      <!-- <keep-alive> -->
         <router-view class="child-view"></router-view>
-      </keep-alive>
+      <!-- </keep-alive> -->
     </transition>
   </div>
 </template>
@@ -36,6 +36,7 @@ import { pageHeight } from "@/common/js/common.js"
   .child-view {
   position: absolute;
   width:100%;
+  min-height:100%;
   transition: all .5s cubic-bezier(.55,0,.1,1);
   }
   .slide-left-enter, .slide-right-leave-active {

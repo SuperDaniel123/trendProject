@@ -1,9 +1,9 @@
 <template>
   <div class="index">
       <div class="content">
-          <keep-alive>
+          <!-- <keep-alive> -->
               <market v-if="node == 0"></market>
-          </keep-alive>
+          <!-- </keep-alive> -->
           
           <keep-alive>
               <transaction v-if="node == 1"></transaction>
@@ -24,7 +24,7 @@
 </template>
 
 <script>
-
+import {mapGetters} from 'vuex'
 import iFooter from '@/components/i-footer'
 //行情
 import market from '@/base/market'
@@ -44,8 +44,13 @@ export default {
         userIndex,
         pageHeight
     },
+    computed:{
+        ...mapGetters([
+            'setMID'
+        ])
+    },
     name:'index',
-    beforeDestroy(){
+    mounted(){
         pageHeight('.content')
     },
     data(){
