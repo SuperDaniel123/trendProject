@@ -11,6 +11,10 @@ const mutations = {
         state.isLogin = login
     },
 
+    //首页状态
+    [types.INDEX_STATE](state,index){
+        state.indexState = index
+    },
     // [types.MK_LIST](state,list){
     //     state.mkList = list
     // },

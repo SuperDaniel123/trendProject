@@ -2,24 +2,24 @@
   <div class="index">
       <div class="content">
           <!-- <keep-alive> -->
-              <market v-if="node == 0"></market>
+              <market v-if="this.indexStateS == 0"></market>
           <!-- </keep-alive> -->
           
           <keep-alive>
-              <transaction v-if="node == 1"></transaction>
+              <transaction v-if="this.indexStateS == 1"></transaction>
           </keep-alive>
 
           <keep-alive>
-              <record v-if="node == 2"></record>
+              <record v-if="this.indexStateS == 2"></record>
           </keep-alive>
 
           <keep-alive>
-              <user-index v-if="node == 3"></user-index>
+              <user-index v-if="this.indexStateS == 3"></user-index>
           </keep-alive>
           
           <!-- <router-link to="/hello">dddddd</router-link> -->
       </div>
-      <i-footer @indexNode="ChildNode"></i-footer>
+      <i-footer></i-footer>
   </div>
 </template>
 
@@ -46,22 +46,13 @@ export default {
     },
     computed:{
         ...mapGetters([
-            'setMID'
+            'setMID',
+            'indexStateS'
         ])
     },
     name:'index',
     mounted(){
         pageHeight('.content')
-    },
-    data(){
-        return{
-            node:'0'
-        }
-    },
-    methods:{
-        ChildNode(node){
-            this.node = node;
-        }
     }
 }
 </script>

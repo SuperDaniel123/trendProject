@@ -7,6 +7,9 @@ function pageHeight(dom){
 
 //时间戳转日期
 function timestamp(time){
+    if(time.length != 10){
+        return time;
+    }
     let date = new Date(time * 1000);
     let Y = date.getFullYear() + '-';
     let M = (date.getMonth()+1 < 10 ? '0'+(date.getMonth()+1) : date.getMonth()+1) + '-';
@@ -16,7 +19,7 @@ function timestamp(time){
     if(m < 10){
         m = "0" + m  + ':'
     }else{
-        m  + ':'
+        m = m  + ':'
     }
     let s = date.getSeconds(); 
     if(s < 10){

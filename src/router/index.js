@@ -90,7 +90,7 @@ export default new Router({
           component:quotation
         },
         {
-          path:'/recordList',
+          path:'/recordList/',
           name:'recordList',
           component:recordList
         },

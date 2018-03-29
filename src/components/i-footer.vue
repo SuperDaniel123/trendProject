@@ -7,45 +7,56 @@
 </template>
 
 <script>
+import {mapMutations,mapGetters} from 'vuex'
 export default {
   name:'ifooter',
-  data(){
-      return{
-          navList:[
-            {
-                name:'行情',
-                icon:'fa-bar-chart',
-                state:'1'
-            },
-            {
-                name:'交易',
-                icon:'fa-gg-circle',
-                state:'0'
-            },
-            {
-                name:'记录',
-                icon:'fa-book',
-                state:'0'
-            },
-            {
-                name:'我的',
-                icon:'fa-user',
-                state:'0'
+    computed:{
+        ...mapGetters(['indexStateS'])
+    },
+    mounted(){
+        this.switchItem(this.indexStateS)
+    },
+    data(){
+        return{
+            navList:[
+                {
+                    name:'行情',
+                    icon:'fa-bar-chart',
+                    state:'1'
+                },
+                {
+                    name:'交易',
+                    icon:'fa-gg-circle',
+                    state:'0'
+                },
+                {
+                    name:'记录',
+                    icon:'fa-book',
+                    state:'0'
+                },
+                {
+                    name:'我的',
+                    icon:'fa-user',
+                    state:'0'
+                }
+            ]
+        }
+    },
+    methods:{
+        ...mapMutations({
+            indexState:"INDEX_STATE"
+        }),
+        switchItem(e){
+            let item = this.navList;
+            for(let i = 0 ; i < item.length ; i++){
+                item[i].state = '0';
             }
-        ]
-      }
-  },
-  methods:{
-      switchItem(e){
-          let item = this.navList;
-          for(let i = 0 ; i < this.navList.length ; i++){
-              item[i].state = '0';
-          }
-          item[e].state = '1';
-          this.navList = item;
-          this.$emit('indexNode',e)
-      } 
-  }
+            item[e].state = '1';
+            this.navList = item;
+            this.indexState(e)
+
+        }
+    }
 }
 </script>
 
