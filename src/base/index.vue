@@ -16,8 +16,6 @@
           <keep-alive>
               <user-index v-if="this.indexStateS == 3"></user-index>
           </keep-alive>
-          
-          <!-- <router-link to="/hello">dddddd</router-link> -->
       </div>
       <i-footer></i-footer>
   </div>

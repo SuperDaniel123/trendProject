@@ -3,7 +3,7 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
-          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click="getPush" >
+          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click="getPush(item.Code)" >
               <div class="title">
                   <h2 v-text="codeName(item.Code)"></h2>
                   <span>点差:{{item.Diff}}</span>
@@ -152,12 +152,11 @@ export default {
             this.mkChange = list;
         },
 
-        getPush(){
+        getPush(pro){
             this.$router.push({
                 path:'/quotation',
                 query: {
-                    num:1,
-                    die:2
+                    details:pro,
                 } 
             })
         },
@@ -171,7 +170,6 @@ export default {
                 if(!data.hasOwnProperty('Code')){
                     return;
                 }
-                // console.log(data)
                 
                 for(let i = 0; i <this.mkChange.length; i++){
                     if(this.mkChange[i]['Code'] == data['Code']){
@@ -181,8 +179,9 @@ export default {
                         this.mkChange.splice(i,1,data)
                     }
                 }
-                // console.log(this.mkChange)
+
             }
+            
 
                 // pubPrice.updateData(e);
             // wsCurrPrice.onclose = ()=> {

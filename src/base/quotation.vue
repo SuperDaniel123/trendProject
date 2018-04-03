@@ -5,7 +5,8 @@
       <div class="line"></div>
       <!--线图占位-->
       <div id="echarts">
-        <geail-charts></geail-charts>
+        <time-charts></time-charts>
+        <!-- <geail-charts></geail-charts> -->
       </div>
 
       <div class="timeTab">
@@ -39,6 +40,7 @@ import backHeader from '@/components/back-header'
 import quotationDest from '@/components/quotationDest'
 import { Checker, CheckerItem, Tab, TabItem} from 'vux'
 import geailCharts from '@/components/grailCharts'
+import timeCharts from '@/components/timeCharts'
 export default {
   name: 'recordList',
   components:{
@@ -48,14 +50,19 @@ export default {
     Tab,
     TabItem,
     quotationDest,
-    geailCharts
+    geailCharts,
+    timeCharts
+  },
+  computed:{
+    headline(){
+      return this.codeName(this.$route.query.details) +' ' +  this.$route.query.details
+    }
   },
   mounted(){
-    // this.$router.query.num
+
   },
   data () {
     return {
-      headline:'美的集团',
       buysNode:0,
       frameValue:{key: '0',value: '时分'},
       timeFrame: [
@@ -85,7 +92,70 @@ export default {
   methods:{
     getData(index){
       this.buysNode = index;
-    }
+    },
+    codeName(code){
+        switch(code){
+            case "XAG_USD" :
+                return '白银';
+                break;
+            case "WTICO_USD":
+                return "美国原油";
+                break;
+            case "NZD_USD":
+                return "新西兰/美元"
+                break;
+            case "EUR_GBP":
+                return "欧元/英磅"
+                break;
+            case "EU50_EUR":
+                return "Europe 50"
+                break;
+            case "FR40_EUR":
+                return "France 40"
+                break;
+            case "NATGAS_USD":
+                return "天然气"
+                break;
+            case "GBP_CAD":
+                return "英磅/加元"
+                break;
+            case "AUD_CAD":
+                return "澳币/加元"
+                break;
+            case "JP225_USD":
+                return "日经指数"
+                break;
+            case "US30_USD":
+                return "US Wall St 30"
+                break;
+            case "HK33_HKD":
+                return "香港恒生"
+                break;
+            case "EUR_USD":
+                return "欧元/美元"
+                break;
+            case "USD_CHF":
+                return "美元/法郎"
+                break;
+            case "DE30_EUR":
+                return "Germany 30"
+                break;
+            case "NAS100_USD":
+                return "US Nas 100"
+                break;
+            case "UK100_GBP":
+                return "UK 100"
+                break;
+            case "XAU_USD":
+                return "黄金"
+                break;
+            case "SPX500_USD":
+                return "SPX 500"
+                break;
+            default:
+                return code;
+        }
+    },
   }
 }
 </script>

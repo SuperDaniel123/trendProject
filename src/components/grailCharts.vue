@@ -116,12 +116,10 @@ export default {
     }
   },
   mounted(){
-    this.$nextTick(()=>{
       this.drawPie('main')
-    })
   },
   methods: {
-    // goback () {
+    // goback () { 
     //   this.$router.goBack()
     // }
 
