@@ -5,13 +5,13 @@
       <div class="line"></div>
       <!--线图占位-->
       <div id="echarts">
-        <time-charts></time-charts>
-        <!-- <geail-charts></geail-charts> -->
+        <time-charts v-if="this.eNode.key === '0'"></time-charts>
+        <geail-charts v-if="this.eNode.key !== '0'" :eindex ="this.eNode"></geail-charts>
       </div>
 
       <div class="timeTab">
-        <checker v-model="frameValue" default-item-class="check-item" selected-item-class="check-item-selected">
-          <checker-item :value="item" v-for="(item, index) in timeFrame" :key="index">{{item.value}}</checker-item>
+        <checker v-model="eNode" default-item-class="check-item" selected-item-class="check-item-selected">
+          <checker-item :value="item" v-for="(item, index) in timeFrame" :key="index" @on-item-click="chartsNode">{{item.value}}</checker-item>
         </checker>
       </div>
       <div class="line"></div>
@@ -58,13 +58,10 @@ export default {
       return this.codeName(this.$route.query.details) +' ' +  this.$route.query.details
     }
   },
-  mounted(){
 
-  },
   data () {
     return {
       buysNode:0,
-      frameValue:{key: '0',value: '时分'},
       timeFrame: [
         {
           key: '0',
@@ -75,21 +72,25 @@ export default {
           value: '1m'
         }, 
         {
-          key: '2',
+          key: '15',
           value: '15m'
         },
         {
-          key: '3',
+          key: '60',
           value: '1h'
         },
         {
-          key: '4',
+          key: '1440',
           value: '日K'
         }
-      ]
+      ],
+      eNode:{key: '0',value: '时分'}
     }
   },
   methods:{
+    chartsNode(value,disabled){
+      this.eNode = value
+    },
     getData(index){
       this.buysNode = index;
     },

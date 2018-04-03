@@ -1,17 +1,17 @@
 <template>
   <div class="timeCharts">
     <div id="main" style="max-width: 100%;height:30rem"></div>
-    <div v-text="price"></div>
+    <!-- <div v-text="price"></div> -->
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
-import { setTimeout, setInterval } from 'timers';
 export default {
     components:{
         echarts
     },
+    
     data(){
         return{
             sdata:[],
@@ -28,19 +28,18 @@ export default {
     },
     created(){
         this.wsCurrPriceCONN()
-        
     },
-    mounted(){
-        this.drawPie('main')
+    beforeDestroy(){
+        this.wsCurr2.close()
     },
     methods:{
         drawPie(id){
-                let opt = {
-                    coord: [this.sdata.time[this.sdata['time'].length - 1] , this.sdata.price[this.sdata.price.length - 1] ],
+
+            this.charts = echarts.init(document.getElementById(id))
+                var opt = {
+                    coord: [this.sdata.time[this.sdata['time'].length - 1] ,  this.sdata.price[this.sdata.price.length - 1]],
                     value: this.sdata.price[this.sdata.price.length - 1]
                 }
-            this.charts = echarts.init(document.getElementById(id))
-
             this.charts.setOption(
                 {
                     grid: {
@@ -154,19 +153,14 @@ export default {
                     if(data.ResultCD == 200 && data.Code == this.code){
                         this.sdata['price'] = data['price']
                         this.sdata['time'] = data['time']
-                        this.drawPie('main')
                         this.wsCurrPrice.close();
                         this.wsCurrPriceReal()
-                        
                     }
                 
             }
-                // pubPrice.updateData(e);
-            // wsCurrPrice.onclose = ()=> {
-            //     // console.log("CurrPrice reConnect :(");
-            //     setTimeout('wsCurrPriceCONN()',3000);
-            // };
         },
+
+
         wsCurrPriceReal(){	//初始化端口连接-DONE
             this.wsCurr2 = new WebSocket('ws://192.168.1.194:16888');	//ws://mid.price.fcczq.com:16888
             this.wsCurr2.onmessage = (e)=>{            
