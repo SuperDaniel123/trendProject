@@ -18,19 +18,19 @@ export default {
             charts:'',
             wsCurrPrice:'',
             wsCurr2:'',
-            price:''
         }
     },
     computed:{
         code(){
             return this.$route.query.details
         },
+
     },
     created(){
         this.wsCurrPriceCONN()
     },
     beforeDestroy(){
-        this.wsCurr2.close()
+        this.wsCurr2.close();
     },
     methods:{
         drawPie(id){
@@ -139,7 +139,6 @@ export default {
                 }
             )
         },
-        
         wsCurrPriceCONN(){	//初始化端口连接-DONE
             this.wsCurrPrice = new WebSocket('ws://192.168.1.194:16999');	//ws://mid.price.fcczq.com:16888
             this.wsCurrPrice.onmessage = (e)=>{   
@@ -181,7 +180,7 @@ export default {
                     this.price = newPrice[newPrice.length - 1] 
                     this.sdata['time'] = newTime;
                     this.sdata['price'] = newPrice;
-                    this.drawPie('main')
+                    this.drawPie('main');
                 }
             }
             this.wsCurrPrice.onerror = () => {

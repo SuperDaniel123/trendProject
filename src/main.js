@@ -3,7 +3,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import FastClick from 'fastclick'
+// import FastClick from 'fastclick'
 import '@/common/css/style.css'
 import '@/common/font/font-awesome/css/font-awesome.min.css'
 import './common/js/axios'
@@ -13,7 +13,7 @@ import  { AlertPlugin } from 'vux'
 Vue.use(AlertPlugin)
 
 Vue.config.productionTip = false
-FastClick.attach(document.body)
+// FastClick.attach(document.body)
 /* eslint-disable no-new */
 
 new Vue({

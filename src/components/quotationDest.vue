@@ -1,61 +1,135 @@
 <template>
   <div class="opeBox">
         <div class="priceTeams">
-            <checker v-model="current" default-item-class="price-item" selected-item-class="price-item-selected">
-                <checker-item :value="item" v-for="(item, index) in priceList" :key="index">{{item.value}}</checker-item>
-            </checker>
+            <button @click="Lot(-5)">-5</button>
+            <button @click="Lot(-3)">-3</button>
+            <input type="number" v-model="skill" @blur="getloseFocus(skill)"/>
+            <button @click="Lot(3)">+3</button>
+            <button @click="Lot(5)">+5</button>
         </div>
         <ul class="operation">
-            <li><span>止损</span><x-number fillable :step="0.1" v-model="stopLoss"></x-number></li>
-            <li><span>获利</span><x-number fillable :step="0.1" v-model="earnProfit"></x-number></li>
-            <li><span>偏差</span><x-number fillable :step="0.1" v-model="deviation"></x-number></li>
-            
+            <li><span>止损</span><small>(止损价 : {{ getStopLoss(this.real,'loss') }} )</small><x-number :min="0" fillable :step="1" v-model="stopLoss"></x-number></li>
+            <li><span>获利</span><small>(止盈价 : {{ getStopLoss(this.real,'gain') }} )</small><x-number fillable :min="0" :step="1" v-model="earnProfit"></x-number></li>
+            <!-- <li><span>偏差</span><x-number fillable :step="0.1" v-model="deviation"></x-number></li> -->
         </ul>
         <div class="quoBtn">
-            <button>立即执行</button>
+            <button @click="getPresent">立即执行</button>
         </div>
   </div>
 </template>
 
 <script>
-import { Checker, CheckerItem,XNumber } from 'vux'
+import { XNumber } from 'vux'
+import {mapGetters} from 'vuex'
 export default {
     components:{
-        Checker, 
-        CheckerItem,
         XNumber
     },
-    props:['deal'],
+    props:['deal','real'],
     data(){
         return{
-            current:{key: '3',value: '0.01'},
-
-            priceList: [{
-                key: '1',
-                value: '-0.1'
-            }, {
-                key: '2',
-                value: '-0.01'
-            }, {
-                key: '3',
-                value: '0.01'
-            },
-            {
-                key: '4',
-                value: '+0.01'
-            },
-            {
-                key: '5',
-                value: '+0.1'
-            }],
+            //手数
+            skill:1,
             //止损
             stopLoss:0,
             //获利
             earnProfit:0,
             //偏差
-            deviation:0
+            // deviation:""
         }
-    }
+    },
+    computed:{
+        ...mapGetters(['setMID'])
+    },
+    watch:{
+        'real':{
+            handler(val,old){
+                // return +val
+            }
+        }
+    },
+    methods:{
+        getloseFocus(num){
+            if(num <= 0 || isNaN(num) || !num){
+                this.skill = 1
+            }
+            return
+        },
+        Lot(num){
+            let o = this.skill;
+            o += num;
+            if(o<=1){
+                alert('最少买1手')
+                o = 1
+            }
+            this.skill = o
+        },
+
+        getStopLoss(o,id){
+            if(this.deal == 0){
+                if(o){
+                    let float = o
+                    let point = (float.split('.'))[1].length
+                    switch(id){
+                        case 'loss':{
+                            let num = (Number(o) * (Math.pow(10,point)) - this.stopLoss)/Math.pow(10,point)
+                            return num
+                            break
+                        }
+                        case 'gain' :{
+                            let num = (Number(o) * (Math.pow(10,point)) + this.earnProfit)/Math.pow(10,point)
+                            return num
+                            break
+                        }
+                    }
+                
+                }   
+            }
+            else if(this.deal == 1){
+                if(o){
+                    let float = o
+                    let point = (float.split('.'))[1].length
+                    switch(id){
+                        case 'loss':{
+                            let num = (Number(o) * (Math.pow(10,point)) + this.stopLoss)/Math.pow(10,point)
+                            return num
+                            break
+                        }
+                        case 'gain' :{
+                            let num = (Number(o) * (Math.pow(10,point)) - this.earnProfit)/Math.pow(10,point)
+                            return num
+                            break
+                        }
+                    }
+                }   
+            }
+            else{
+                return o
+            }
+        },
+
+        getPresent(){
+            let opt = {
+                MID:this.setMID, 
+                PayType:this.deal, 
+                Quantity:this.skill, 
+                StopLoss:this.stopLoss, 
+                TakeProfit:this.earnProfit, 
+                ItemID:this.$route.query.details
+            }
+            this.$ajax('/trade/order','post',opt).then((res)=>{
+                let data = res.data;
+                if(!data.ResultCD){
+                    console.log(data.ErrorMsg)
+                    return
+                }
+                if(data.ResultCD == 200){
+                    alert('下单成功')
+                }
+            })
+        }
+    },
+
 }
 </script>
 
@@ -67,12 +141,21 @@ export default {
         width:100%;
         line-height: 3rem;
         .bottomRim;
-        .price-item {
-            color: @font-Sgray;
-            padding: 0.5rem 1.5rem;
+        input[type="number"]{
+            border:1px solid @bgGray;
+            height:2rem;
+            width:4rem;
+            text-align: center;
+            color:@font-Lgray;
+            margin:0 1rem;
         }
-        .price-item-selected {
-            color: @blue;
+        button{
+            color:@white;
+            height:1.8rem;
+            width:3rem;
+            margin:0 0.5rem;
+            background: @blue;
+            .border-radiusS;
         }
     }
     .operation{
@@ -84,6 +167,12 @@ export default {
             .bottomRim;
             span{
                 font-size:@font1;
+                color:@font-Lgray;
+                margin-right:1rem;
+            }
+            small{
+                font-size:@font1;
+                color:@font-Sgray
             }
             .weui-cell{
                 float: right;

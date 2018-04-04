@@ -19,6 +19,10 @@ const mutations = {
     //     state.mkList = list
     // },
 
+    //当前价（共用）
+    [types.CURRENT_PRICE](state,index){
+        state.currPrice = index
+    }
 
 }
 

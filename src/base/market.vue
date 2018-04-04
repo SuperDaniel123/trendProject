@@ -34,12 +34,14 @@
 <script>
 import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
+import { setTimeout } from 'timers';
 export default {
     components:{
         iHeader,
     },
-    created(){
+    mounted(){
         this.getPost();
+        
     },
     computed:{
         ...mapGetters(['setMID']),
@@ -50,6 +52,7 @@ export default {
     data(){
         return{
             headline:'最新行情',
+            //原始产品数组
             mkChange:[], 
             wsCurrPrice:''
         }
@@ -127,10 +130,13 @@ export default {
                 }
 
                 this.mkChange = res.data.Data
-                this.excludeList()
+                this.excludeList() 
+                this.wsCurrPriceCONN();
+
+
                 
             })
-            this.wsCurrPriceCONN();
+            
         },
 
         //排除
@@ -152,7 +158,7 @@ export default {
             this.mkChange = list;
         },
 
-        getPush(pro){
+        getPush(pro,id){
             this.$router.push({
                 path:'/quotation',
                 query: {
