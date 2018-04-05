@@ -83,41 +83,7 @@ export default {
             recharge:[],
             //提现记录
             withdraw:'',
-
-
-            trecord:[
-        　　　　{
-        　　　　　　OrderID:"6327c8be806cd0f7bd145c378768c88d",
-        　　　　　　OrderSN:"L2018031616214407081",
-        　　　　　　UID:"7ab783688614df64672260e773c35ecb",
-        　　　　　　uCode:"001",
-        　　　　　　AID:"962685f22a2f607852aa9a01e5d801b8",
-        　　　　　　aName:"001",
-        　　　　　　aCode:"001001",
-        　　　　　　MID:"bc2229fafa8421b4a00baa27ed5b170d",
-        　　　　　　IDName:"sam",
-        　　　　　　LoginID:"13360312127",
-        　　　　　　Code:"XAUUSD",
-        　　　　　　Name:"黄金",
-        　　　　　　PayType:"1", 
-        　　　　　　Quantity:"1",
-        　　　　　　OrderFee:"80.00",
-        　　　　　　StopLoss:"1000",
-        　　　　　　TakeProfit:"0",
-        　　　　　　Leverage:"2",
-        　　　　　　MinFluctuation:"0.01",
-        　　　　　　CurrentTime:"1521188504",
-        　　　　　　CurrentPrice:"1317.910",
-        　　　　　　ClosePrice:"1318.937",
-        　　　　　　CloseTime:"1521188998",
-        　　　　　　FinalTime:"1521230400",
-        　　　　　　ProfitOrLoss:"-205.40",
-        　　　　　　Status:"200",
-        　　　　　　OrderDeposit:"100.00",
-        　　　　　　WOL:null,
-                   state:false
-        　　　　}
-        　　]
+            trecord:[]
         }
     },
     methods:{

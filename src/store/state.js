@@ -6,8 +6,8 @@ const state = {
     //首页状态
     indexState:0,
 
-    //当前价格
-    currPrice:''
+    //个人信息
+    user:''
 
     //产品列表
     // mkList:[],

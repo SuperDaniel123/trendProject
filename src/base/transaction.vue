@@ -3,7 +3,10 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
-          <li class="clearfix" v-for="(item,index) in this.property" :key="index">{{item.title}}<span v-text="item.num"></span></li>
+          <li class="clearfix">结余<span v-text="property.wolBalance"></span></li>
+          <li class="clearfix">净值<span v-text="property.fBalance"></span></li>
+          <li class="clearfix">预存值<span v-text="property.aBalance"></span></li>
+          <li class="clearfix">可用预付款<span v-text="property.Balance"></span></li>
       </ul>
       <div class="line"></div>
       <ul class="piceLine">
@@ -19,106 +22,94 @@
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
-                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text="item.ProfitOrLoss"></h2>
+                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text=" item.ProfitOrLoss || '-'"></h2>
               </div>
               <ul class="more">
                   <li class="clearfix">止损<span v-text="item.StopLoss"></span></li>
-                  <li class="clearfix">获利<span v-text="item.ProfitOrLoss"></span></li>
+                  <li class="clearfix">获利<span v-text="item.ProfitOrLoss || '-'"></span></li>
                   <li class="clearfix">库存量<span v-text="item.TakeProfit"></span></li>
                   <li class="clearfix">手续费<span v-text="item.OrderFee"></span></li>
               </ul>
-          </li>
+          </li> 
       </ul>
   </div>
 </template>
 
 <script>
 import iHeader from '@/components/i-header'
+import {mapGetters} from 'vuex'
+import { setInterval, clearInterval } from 'timers';
 export default {
     components:{
         iHeader,
     },
+    created(){
+        this.holder()
+        this.userFund()
+    },
+    mounted(){
+        this.clock = setInterval(()=>{
+            this.holder()
+        },3000)
+        
+    },
+    beforeDestroy(){
+        if(this.clock){
+            clearInterval(this.clock)
+        }
+    },
+    computed:{
+      ...mapGetters(['setMID'])
+    },
     data(){
         return{
             headline:'交易',
-            property:[
-                {title:'结余',num:'100 100.00'},
-                {title:'净值',num:'100 149.00'},
-                {title:'结余',num:'312.94'},
-                {title:'预存值',num:'97851.00'},
-                {title:'可用预付款',num:'64111.00'},
-            ],
-            piceLine:[
-                {
-                   OrderID:"76d08a9c078e1db0b45dc75ffe473d7a",
-        　　　　　　OrderSN:"L2018031520183302635",
-        　　　　　　UID:"7ab783688614df64672260e773c35ecb",
-        　　　　　　uName:"001",
-        　　　　　　uCode:"001",
-        　　　　　　AID:"962685f22a2f607852aa9a01e5d801b8",
-        　　　　　　aName:"001",
-        　　　　　　aCode:"001001",
-        　　　　　　MID:"bc2229fafa8421b4a00baa27ed5b170d",
-        　　　　　　IDName:"sam",
-        　　　　　　LoginID:"13360312127",
-        　　　　　　Code:"XAUUSD",
-        　　　　　　Name:"黄金",
-        　　　　　　PayType:"1",
-        　　　　　　Quantity:"1",
-        　　　　　　OrderFee:"80.00",
-        　　　　　　StopLoss:"5000",
-        　　　　　　TakeProfit:"0",
-        　　　　　　Leverage:"2",
-        　　　　　　MinFluctuation:"0.01",
-        　　　　　　CurrentTime:"1521116313",
-        　　　　　　CurrentPrice:"1322.548",
-        　　　　　　ClosePrice:"1322.735",
-        　　　　　　CloseTime:"1521116572",
-        　　　　　　FinalTime:"1521144000",
-        　　　　　　ProfitOrLoss:"-37.40",
-        　　　　　　Status:"200",
-        　　　　　　OrderDeposit:"100.00",
-        　　　　　　WOL:null,
-                   state:false
-                },
-                {
-                   OrderID:"76d08a9c078e1db0b45dc75ffe473d7a",
-        　　　　　　OrderSN:"L2018031520183302635",
-        　　　　　　UID:"7ab783688614df64672260e773c35ecb",
-        　　　　　　uName:"001",
-        　　　　　　uCode:"001",
-        　　　　　　AID:"962685f22a2f607852aa9a01e5d801b8",
-        　　　　　　aName:"001",
-        　　　　　　aCode:"001001",
-        　　　　　　MID:"bc2229fafa8421b4a00baa27ed5b170d",
-        　　　　　　IDName:"sam",
-        　　　　　　LoginID:"13360312127",
-        　　　　　　Code:"XAUUSD",
-        　　　　　　Name:"黄金",
-        　　　　　　PayType:"1",
-        　　　　　　Quantity:"1",
-        　　　　　　OrderFee:"80.00",
-        　　　　　　StopLoss:"5000",
-        　　　　　　TakeProfit:"0",
-        　　　　　　Leverage:"2",
-        　　　　　　MinFluctuation:"0.01",
-        　　　　　　CurrentTime:"1521116313",
-        　　　　　　CurrentPrice:"1322.548",
-        　　　　　　ClosePrice:"1322.735",
-        　　　　　　CloseTime:"1521116572",
-        　　　　　　FinalTime:"1521144000",
-        　　　　　　ProfitOrLoss:"-37.40",
-        　　　　　　Status:"200",
-        　　　　　　OrderDeposit:"100.00",
-        　　　　　　WOL:null,
-                   state:false
-                }
-            ]
+            property:[],
+            piceLine:[],
+            //挂在计时器
+            clock:''
         }
     },
     methods:{
         getShow(id){
             this.piceLine[id].state = !this.piceLine[id].state
+        },
+        //个人资金
+        userFund(){
+            this.$ajax('/account/balance','post',{MID:this.setMID}).then(res=>{
+                if(res.status != 200){
+                    console.log('error!')
+                    return
+                }
+                this.property = res.data.Data
+            })
+        },
+
+        //订单数
+        holder(){
+            this.$ajax('/trade/holder','post',{MID:this.setMID}).then((res)=>{
+                let data = res.data;
+                if(!data.ResultCD){
+                    console.log(data.ErrorMsg)
+                    return
+                }
+
+                if(this.piceLine.length == 0 ){
+                    for(let i = 0; i <data.Data.length ; i++){
+                        let temp = data.Data[i];
+                        temp['state'] = false;
+                    }
+                    this.piceLine = data.Data
+                }
+                else if(this.piceLine.length > 0){
+                    for(let i = 0; i <data.Data.length ; i++){
+                        let temp = data.Data[i];
+                        for (let key in temp){
+                            this.piceLine[i][key] = temp[key]
+                        }
+                    }
+                }
+            })
         }
     }
 }
@@ -126,9 +117,7 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-[v-cloak] {
-    display: none;
-}
+
 .line{
     .e-line;
 }

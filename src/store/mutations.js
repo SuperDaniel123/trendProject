@@ -15,14 +15,12 @@ const mutations = {
     [types.INDEX_STATE](state,index){
         state.indexState = index
     },
-    // [types.MK_LIST](state,list){
-    //     state.mkList = list
-    // },
 
-    //当前价（共用）
-    [types.CURRENT_PRICE](state,index){
-        state.currPrice = index
-    }
+    //个人信息
+    [types.USER_INFO](state,info){
+        state.user = info
+    },
+
 
 }
 

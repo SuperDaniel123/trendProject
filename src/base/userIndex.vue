@@ -5,8 +5,8 @@
           <router-link to="/personal">
                 <img class="headPortrait" src="../common/images/portrait.png" />
                 <div class="nick">
-                    <h2>昵称: <span>刘某某</span></h2>
-                    <p>(18675766521)</p>
+                    <h2>昵称: <span v-text="userDatum.IDName"></span></h2>
+                    <p>( {{userDatum.LoginID}} )</p>
                 </div>
           </router-link>
           <div class="btn">
@@ -34,19 +34,47 @@
 
 <script>
 import iHeader from '@/components/i-header'
-
+import {mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         iHeader
     },
-
+    computed:{
+        ...mapGetters([
+            'setMID'
+        ])
+    },
+    created(){
+        this.getUserDatum()
+    },
     data(){
         return{
-            headline:'我的'
+            headline:'我的',
+            userDatum:'',
+        }
+    },
+    watch:{
+        'userDatum':{
+            handler(val,old){
+                this.userInfo(val)
+            },
+            deep:true
         }
     },
     methods:{
-
+        ...mapMutations({
+            userInfo:"USER_INFO"
+        }),
+        //个人信息
+        getUserDatum(){
+            this.$ajax('/account/info','post',{MID:this.setMID}).then(res=>{
+                if(res.status != 200){
+                    console.log('error!')
+                    return
+                }
+                this.userDatum = res.data.Data
+            })
+        }
     }
 }
 </script>

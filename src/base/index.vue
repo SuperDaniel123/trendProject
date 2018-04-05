@@ -1,21 +1,13 @@
 <template>
   <div class="index">
       <div class="content">
-          <!-- <keep-alive> -->
               <market v-if="this.indexStateS == 0"></market>
-          <!-- </keep-alive> -->
           
-          <keep-alive>
               <transaction v-if="this.indexStateS == 1"></transaction>
-          </keep-alive>
 
-          <keep-alive>
               <record v-if="this.indexStateS == 2"></record>
-          </keep-alive>
 
-          <keep-alive>
               <user-index v-if="this.indexStateS == 3"></user-index>
-          </keep-alive>
       </div>
       <i-footer></i-footer>
   </div>
