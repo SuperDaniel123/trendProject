@@ -3,7 +3,7 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
-          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click="getPush(item.Code)" >
+          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click=" getPush(item.Code)" >
               <div class="title">
                   <h2 v-text="codeName(item.Code)"></h2>
                   <span>点差:{{item.Diff}}</span>
@@ -39,7 +39,7 @@ export default {
     components:{
         iHeader,
     },
-    mounted(){
+    created(){
         this.getPost();
         
     },
@@ -52,7 +52,9 @@ export default {
     data(){
         return{
             headline:'最新行情',
-            //原始产品数组
+            //产品itemID
+            itemID:[],
+
             mkChange:[], 
             wsCurrPrice:''
         }
@@ -128,13 +130,21 @@ export default {
                     console.log('error!')
                     return
                 }
-
+                let arr = res.data.Data
+                for(let i = 0 ; i<arr.length; i++){
+                    for(let key in arr[i]){
+                        let o = {}
+                        if(key == "ItemID"){
+                            o['ItemID'] = arr[i][key]
+                            o['code'] = arr[i]['Code']
+                            this.itemID.push(o)
+                            
+                        }
+                    }
+                }
                 this.mkChange = res.data.Data
                 this.excludeList() 
-                this.wsCurrPriceCONN();
 
-
-                
             })
             
         },
@@ -156,13 +166,22 @@ export default {
                 }
             }
             this.mkChange = list;
+            this.wsCurrPriceCONN();
         },
 
-        getPush(pro,id){
+        getPush(pro){
+            let id;
+            for(let i = 0; i<this.itemID.length; i++){
+                let entity = this.itemID[i]
+                if(pro == entity['code']){
+                    id = entity['ItemID']
+                }
+            }
             this.$router.push({
                 path:'/quotation',
                 query: {
                     details:pro,
+                    itemID:id
                 } 
             })
         },
@@ -176,15 +195,17 @@ export default {
                 if(!data.hasOwnProperty('Code')){
                     return;
                 }
+                let list = this.mkChange
                 
-                for(let i = 0; i <this.mkChange.length; i++){
-                    if(this.mkChange[i]['Code'] == data['Code']){
+                for(let i = 0; i <list.length; i++){
+                    if(list[i]['Code'] == data['Code']){
                         // for(var key in data){
                         //     this.mkChange[i][key] = data[key]
                         // }
-                        this.mkChange.splice(i,1,data)
+                        list.splice(i,1,data)
                     }
                 }
+                this.mkChange = list
 
             }
             

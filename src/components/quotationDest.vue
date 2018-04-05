@@ -19,8 +19,8 @@
 </template>
 
 <script>
-import { XNumber } from 'vux'
-import {mapGetters} from 'vuex'
+import {XNumber} from 'vux'
+import {mapGetters,mapMutations} from 'vuex'
 export default {
     components:{
         XNumber
@@ -49,6 +49,9 @@ export default {
         }
     },
     methods:{
+        ...mapMutations({
+            indexState:'INDEX_STATE'
+        }),
         getloseFocus(num){
             if(num <= 0 || isNaN(num) || !num){
                 this.skill = 1
@@ -115,7 +118,7 @@ export default {
                 Quantity:this.skill, 
                 StopLoss:this.stopLoss, 
                 TakeProfit:this.earnProfit, 
-                ItemID:this.$route.query.details
+                ItemID:this.$route.query.itemID
             }
             this.$ajax('/trade/order','post',opt).then((res)=>{
                 let data = res.data;
@@ -125,6 +128,10 @@ export default {
                 }
                 if(data.ResultCD == 200){
                     alert('下单成功')
+                    this.indexState(1)
+                    this.$router.push({
+                        path:'/'
+                    })
                 }
             })
         }
