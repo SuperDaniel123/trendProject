@@ -3,19 +3,19 @@
       <back-header :headline="headline"></back-header>
       <div class="content">
           <ul class="ulTeams">
-              <li><span>姓名：</span><input type="text" placeholder="请输入姓名" /></li>
-              <li><span>手机：</span><input type="phone" placeholder="请输入预留手机" /></li>
+              <li><span>姓名：</span><input type="text" placeholder="请输入姓名" v-model="userName"/></li>
+              <li><span>手机：</span><input type="phone" placeholder="请输入预留手机" v-model="telphone" /></li>
               <li class="plus">
                 <popup-picker :title="siteName" :data="addlist" :columns="2" v-model="value" show-name placeholder="请选择"></popup-picker>
               </li>
-              <li><span>网点：</span><input type="phone" placeholder="请输入网点" /></li>
+              <li><span>网点：</span><input type="phone" placeholder="请输入网点" v-model="branch"/></li>
               <li class="plus">
                 <popup-picker :title="bankName" :data="bankList"  v-model="bank" placeholder="请选择银行"></popup-picker>
               </li>
-              <li><span>银行卡：</span><input type="number" placeholder="请输入银行卡号" /></li>
+              <li><span>银行卡：</span><input type="number" placeholder="请输入银行卡号" v-model="bankNum" /></li>
           </ul>
           <div class="boundbtn">
-              <button>立即绑定</button>
+              <button @click="addCard()">立即绑定</button>
           </div>
       </div>
   </div>
@@ -23,45 +23,74 @@
 
 <script>
 import backHeader from '@/components/back-header'
-import {PopupPicker} from 'vux'
+import {PopupPicker,ChinaAddressV4Data, Value2nameFilter as value2name} from 'vux'
+import data from '@/common/js/bank.json'
 export default {
     components:{
         PopupPicker,
         backHeader
     },
+    computed:{
+        //银行列表json
+        bankList(){
+            return [data.list]
+        },
+        //地区json
+        addlist(){
+            return ChinaAddressV4Data;
+        },
+        //地区名转换
+        city(){
+            return value2name(this.value, ChinaAddressV4Data)
+        }
+    },
     data(){
         return{
             headline:'添加银行卡',
             siteName: '地区：',
+            //用户名
+            userName:'',
+            //电话
+            telphone:'',
+            //地区
             value: [],
+            //网点
+            branch:'',
             bankName:'银行：',
-            bankList:[['广发银行', '农业银行', '建设银行', '中国银行', '浦发银行', '农商银行', '不告诉你']],
+            //银行
             bank:[],
-            addlist: [{
-                name: '广东',
-                value: 'gd',
-                parent: 0
-            }, {
-                name: '广西',
-                value: 'gx',
-                parent: 0
-            }, {
-                name: '佛山',
-                value: 'foshan',
-                parent: 'gd'
-            }, {
-                name: '广州',
-                value: 'guangzhou',
-                parent: 'gd'
-            }, {
-                name: '梧州',
-                value: 'wuzhou',
-                parent: 'gx'
-            }, {
-                name: '广宁',
-                value: 'guangning',
-                parent: 'gx'
-            }],
+            //地级市json 
+            bankNum:''
+        }
+    },
+    methods:{
+        addCard(){
+            // console.log(this.userName + '用户名')
+            // console.log(this.telphone + '电话号码')
+            // console.log(this.city)
+            // console.log(this.branch + '网点')
+            // console.log(this.bank + '银行')
+            if(this.userName == '' || this.telphone == '' || this.city.length == 0 || this.branch == '' || this.bank == '' || this.bankNum == ''){
+                alert('参数不能为空')
+                return;
+            }
+
+            //验证电话号码
+            let p = this.telphone
+            if(!(/^1[3|4|5|8][0-9]\d{4,8}$/.test(p))){ 
+                alert("请输入正确的电话号码"); 
+                this.telphone = ''
+                return; 
+            } 
+            //验证银行卡
+            let c = this.bankNum;
+            if(!( /^\d{19}$/g.test(c))){
+                alert('银行卡格式错误')
+                this.bankNum = ''
+                return;
+            }
+
+
         }
     }
 }

@@ -4,8 +4,10 @@
       <div class="content">
         <ul class="cardList">
             <li v-for="item in this.cardList" :key="item.key">
-                <img src="../common/images/bankCard.jpg" />
+                <span v-text="item.BankName"></span>
+                <img src="../common/images/vs.png" />
                 <b v-text="item.encrypt"></b>
+                <i class="fa fa-close" @click="delCard(item.ID)"></i>
             </li>
         </ul>
         <div class="boundbtn">
@@ -20,26 +22,24 @@
 
 <script>
 import backHeader from '@/components/back-header'
+import {mapGetters} from 'vuex'
     export default {
     components:{
         backHeader
     },
+    computed:{
+        ...mapGetters([
+            'setMID'
+        ])
+    },
     mounted(){
-        this.dataRes();
+        this.getList();
+        // this.dataRes();
     },
     data(){
         return{
             headline:'我的银行卡',
-            cardList:[
-                {
-                    cardNum:'6227003110370109578',
-                    encrypt:''
-                },
-                {
-                    cardNum:'5466124986548651348',
-                    encrypt:''
-                }
-            ]
+            cardList:[]
 
         }
     },
@@ -57,11 +57,11 @@ import backHeader from '@/components/back-header'
         },
 
         //数据替换
-        dataRes(){
-            let arr = this.cardList;
+        dataRes(list){
+            let arr = list;
             for(let i=0; i<arr.length; i++){
                 //字符串转成数组
-                let tra = arr[i].cardNum.split('')
+                let tra = arr[i].BankAccount.split('')
                 //承载字符串转成数组
                 let _arr = [];
                 //承载转换后的字符
@@ -84,6 +84,35 @@ import backHeader from '@/components/back-header'
                 arr[i].encrypt = siti;
             }
             this.cardList = arr;
+        },
+        getList(){
+            this.$ajax('/card/list','post',{MID:this.setMID}).then(res=>{
+                let data = res.data
+                if(data.ResultCD != '200'){
+                    alert(data.ErrorMsg)
+                    return
+                }
+                for(let key in data.Data){
+                    this.cardList.push(data.Data[key])
+                }
+                this.dataRes(this.cardList)
+            })
+        },
+        delCard(id){
+            let r = confirm("确定要删除吗?");
+            if(r){
+                let opt = {
+                    MID:this.setMID,
+                    ID:id
+                }
+                this.$ajax('/card/unbind','POST',opt).then(res=>{
+                    if(data.ResultCD != '200'){
+                        alert(data.ErrorMsg)
+                        return
+                    }
+                    alert('删除成功')
+                })
+            }
         }
         
     }
@@ -98,6 +127,13 @@ import backHeader from '@/components/back-header'
         position: relative;
         margin-bottom: @font1;
         .border-radiusS;
+        span{
+            position: absolute;
+            top:2rem;
+            left: 1.5rem;
+            font-size:@font1-25;
+            color:@white;
+        }
         img{
             max-width:100%;
         }
@@ -107,6 +143,13 @@ import backHeader from '@/components/back-header'
             right:1rem;
             color:@white;
             font-size:2rem;
+        }
+        .fa{
+            color:@white;
+            position: absolute;
+            right:0.5rem;
+            top:0.5rem;
+            font-size:1.2rem;
         }
     }
 }
