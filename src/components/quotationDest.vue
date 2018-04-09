@@ -61,7 +61,7 @@ export default {
         Lot(num){
             let o = this.skill;
             o += num;
-            if(o<=1){
+            if(o<1){
                 alert('最少买1手')
                 o = 1
             }

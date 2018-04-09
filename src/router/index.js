@@ -70,7 +70,7 @@ export default new Router({
           component:addCard
         },
         {
-          path:'/password',
+          path:'/password/:id',
           name:'password',
           component:password
         },

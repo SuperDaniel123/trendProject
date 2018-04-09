@@ -34,7 +34,7 @@ export default {
     text-align:center;
     line-height: 44px;
     font-size:18px;
-    z-index: 999;
+    z-index: 99;
     .bottomRim;
     i.fa{
         position: absolute;

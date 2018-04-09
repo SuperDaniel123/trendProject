@@ -184,7 +184,7 @@ export default {
 @import '../common/css/common.less';
 #echarts{
   width:100%;
-  height:30rem;
+  height:25rem;
   background: @white;
 }
 .line{

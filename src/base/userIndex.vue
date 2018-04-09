@@ -25,8 +25,8 @@
       </ul>
       <div class="line"></div>
       <ul class="common-line">
-          <router-link to="/password"><li>修改登录密码</li></router-link>
-          <router-link to="/password"><li>修改支付密码</li></router-link>
+          <router-link :to=" {name:'password', params: { id: 1 }} "><li>修改登录密码</li></router-link>
+          <router-link :to=" {name:'password', params: { id: 2 }} "><li>修改支付密码</li></router-link>
           
       </ul>
   </div>
