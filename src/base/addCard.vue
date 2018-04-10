@@ -4,14 +4,16 @@
       <div class="content">
           <ul class="ulTeams">
               <li><span>姓名：</span><input type="text" placeholder="请输入姓名" v-model="userName"/></li>
-              <li><span>手机：</span><input type="phone" placeholder="请输入预留手机" v-model="telphone" /></li>
+              <li><span>手机：</span><input type="tel" placeholder="请输入预留手机" v-model="telphone" /></li>
               <li class="plus">
-                <popup-picker :title="siteName" :data="addlist" :columns="2" v-model="value" show-name placeholder="请选择"></popup-picker>
+                <popup-picker :title="siteName" :data="addlist" :columns="2" v-model="value" show-name placeholder="请选择" ></popup-picker>
               </li>
-              <li><span>网点：</span><input type="phone" placeholder="请输入网点" v-model="branch"/></li>
               <li class="plus">
                 <popup-picker :title="bankName" :data="bankList"  v-model="bank" placeholder="请选择银行"></popup-picker>
               </li>
+
+              <li><span>网点：</span><input type="text" placeholder="请输入网点" v-model="branch"/></li>
+
               <li><span>银行卡：</span><input type="number" placeholder="请输入银行卡号" v-model="bankNum" /></li>
           </ul>
           <div class="boundbtn">
@@ -24,6 +26,7 @@
 <script>
 import backHeader from '@/components/back-header'
 import {PopupPicker,ChinaAddressV4Data, Value2nameFilter as value2name} from 'vux'
+import {mapGetters} from 'vuex'
 import data from '@/common/js/bank.json'
 export default {
     components:{
@@ -31,6 +34,9 @@ export default {
         backHeader
     },
     computed:{
+        ...mapGetters([
+            'setMID'
+        ]),
         //银行列表json
         bankList(){
             return [data.list]
@@ -44,6 +50,16 @@ export default {
             return value2name(this.value, ChinaAddressV4Data)
         }
     },
+    // watch:{
+    //     'bankNum':{
+    //         handler(val,old){
+    //             if(/\S{5}/.test(val)){
+    //                 this.bankNum = val.replace(/\s/g, '').replace(/(.{4})/g, "$1 ");
+    //             }
+    //         },
+    //         deep:true
+    //     }
+    // },
     data(){
         return{
             headline:'添加银行卡',
@@ -59,8 +75,8 @@ export default {
             bankName:'银行：',
             //银行
             bank:[],
-            //地级市json 
-            bankNum:''
+            //银行卡号
+            bankNum:'',
         }
     },
     methods:{
@@ -85,13 +101,49 @@ export default {
             //验证银行卡
             let c = this.bankNum;
             if(!( /^\d{19}$/g.test(c))){
-                alert('银行卡格式错误')
+                alert('请输入19位银行卡号')
                 this.bankNum = ''
                 return;
             }
+            let area = this.division(this.city)
+            let opt = {
+                MID:this.setMID,
+                Province:area[0],
+                City:area[1],
+                BankBranch:this.branch,
+                BankAccount:this.bankNum,
+                BankName:this.bank[0],
+                AccountName:this.userName,
+                MobilePhone:this.telphone
+            }
+            this.$ajax('/card/bind','post',opt).then(res=>{
+                let data = res.data
+                if(data.ResultCD != '200'){
+                    alert(data.ErrorMsg)
+                    return
+                }
+                alert('添加成功')
+                this.$router.go(-1)
+            })
 
+        },
 
-        }
+        //市区分离
+        division(str){
+            if(!str){
+                return
+            }
+            let opt = []
+            let arr = str.split(' ')
+            for(let i = 0 ; i < 2 ; i++){
+                if(arr[i] == '市辖区'){
+                    arr[i] = arr[0]
+                }
+                opt.push(arr[i])
+            }
+            return opt;
+        } 
+        
     }
 }
 </script>

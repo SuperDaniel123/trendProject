@@ -106,11 +106,22 @@ import {mapGetters} from 'vuex'
                     ID:id
                 }
                 this.$ajax('/card/unbind','POST',opt).then(res=>{
+                    let data = res.data
                     if(data.ResultCD != '200'){
                         alert(data.ErrorMsg)
                         return
                     }
-                    alert('删除成功')
+                    alert('删除成功');
+                    let arr = [];
+                    for(let i = 0; i <this.cardList.length; i++){
+                        let temp = this.cardList[i];
+                        if(temp.ID == id){
+                            continue;
+                        }
+                        arr.push(temp)
+                    }
+                    this.cardList = arr
+                    
                 })
             }
         }

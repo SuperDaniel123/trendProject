@@ -25,6 +25,9 @@ import quotation from '@/base/quotation'
 //login
 import login from '@/base/login'
 
+//密码测试
+import enter from '@/components/enterPassword'
+
 
 Router.prototype.goBack = function () {
   this.isBack = true
@@ -100,6 +103,10 @@ export default new Router({
       path:'/login',
       name:'login',
       component:login
+    },
+    {
+      path:'/enter',
+      component:enter
     },
     {
       path:'*',
