@@ -27,8 +27,11 @@
       <ul class="common-line">
           <router-link :to=" {name:'password', params: { id: 1 }} "><li>修改登录密码</li></router-link>
           <router-link :to=" {name:'password', params: { id: 2 }} "><li>修改支付密码</li></router-link>
-          
       </ul>
+
+      <div class="boundbtn">
+          <button @click="logOut">退出</button>
+      </div>
   </div>
 </template>
 
@@ -63,7 +66,10 @@ export default {
     },
     methods:{
         ...mapMutations({
-            userInfo:"USER_INFO"
+            userInfo:"USER_INFO",
+            mid:'SET_MID',
+            isLogin:'IS_LOGIN',
+            indexState:'INDEX_STATE'
         }),
         //个人信息
         getUserDatum(){
@@ -74,6 +80,13 @@ export default {
                 }
                 this.userDatum = res.data.Data
             })
+        },
+        logOut(){
+            sessionStorage.removeItem('MID')
+            this.mid('')
+            this.isLogin(false)
+            alert('退出成功')
+            location.reload()
         }
     }
 }

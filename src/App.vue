@@ -15,7 +15,7 @@ export default {
       this.login(true)
     }
     if(!this.$store.getters.isLogin){
-      alert('请先登录');
+      // alert('请先登录');
       this.$router.push('/login')
     }
   },

@@ -32,7 +32,7 @@ router.beforeEach((to, from, next) => {
   if(to.path === '/login'){
     next()
   }else if(store.getters.isLogin == false){
-    alert('请先登录')
+    // alert('请先登录')
     next('/login')
   }else{
     next();

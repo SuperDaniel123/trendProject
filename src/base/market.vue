@@ -41,7 +41,6 @@ export default {
     },
     created(){
         this.getPost();
-        
     },
     computed:{
         ...mapGetters(['setMID']),
@@ -54,73 +53,20 @@ export default {
             headline:'最新行情',
             //产品itemID
             itemID:[],
-
             mkChange:[], 
             wsCurrPrice:''
         }
     },
     methods:{
         codeName(code){
-            switch(code){
-                case "XAG_USD" :
-                    return '白银';
-                    break;
-                case "WTICO_USD":
-                    return "美国原油";
-                    break;
-                case "NZD_USD":
-                    return "新西兰/美元"
-                    break;
-                case "EUR_GBP":
-                    return "欧元/英磅"
-                    break;
-                case "EU50_EUR":
-                    return "Europe 50"
-                    break;
-                case "FR40_EUR":
-                    return "France 40"
-                    break;
-                case "NATGAS_USD":
-                    return "天然气"
-                    break;
-                case "GBP_CAD":
-                    return "英磅/加元"
-                    break;
-                case "AUD_CAD":
-                    return "澳币/加元"
-                    break;
-                case "JP225_USD":
-                    return "日经指数"
-                    break;
-                case "US30_USD":
-                    return "US Wall St 30"
-                    break;
-                case "HK33_HKD":
-                    return "香港恒生"
-                    break;
-                case "EUR_USD":
-                    return "欧元/美元"
-                    break;
-                case "USD_CHF":
-                    return "美元/法郎"
-                    break;
-                case "DE30_EUR":
-                    return "Germany 30"
-                    break;
-                case "NAS100_USD":
-                    return "US Nas 100"
-                    break;
-                case "UK100_GBP":
-                    return "UK 100"
-                    break;
-                case "XAU_USD":
-                    return "黄金"
-                    break;
-                case "SPX500_USD":
-                    return "SPX 500"
-                    break;
-                default:
-                    return code;
+            let arr = this.itemID
+            for(let i = 0; i < arr.length; i++){
+                let temp = arr[i]
+                for(let key in temp){
+                    if(temp[key] == code){
+                        return temp['TypeName']
+                    }
+                }
             }
         },
 
@@ -137,13 +83,16 @@ export default {
                         if(key == "ItemID"){
                             o['ItemID'] = arr[i][key]
                             o['code'] = arr[i]['Code']
+                            o['TypeName'] = arr[i]['TypeName']
                             this.itemID.push(o)
                             
                         }
                     }
+                    
                 }
+                console.log(this.itemID)
                 this.mkChange = res.data.Data
-                this.excludeList() 
+                this.excludeList()
 
             })
             
@@ -153,6 +102,7 @@ export default {
         excludeList(){
             let localCode = localStorage.getItem('code')
             if(!localCode){
+                this.wsCurrPriceCONN();
                 return
             }
             let arr = localCode.split(' ')

@@ -19,7 +19,7 @@ export default {
     name:'login',
     data(){
         return{ 
-            userPhone:'',
+            userPhone:localStorage.getItem('userName') || '',
             password:'',
             facility:'iphone',
             ip:'127.0.0.1'
@@ -71,6 +71,7 @@ export default {
 
                     default:{
                         sessionStorage.setItem('MID',data.Data.MID)
+                        localStorage.setItem('userName',this.userPhone)
                         this.isLogin(true);
                         this.setMID(sessionStorage.getItem('MID'));
                         this.$router.push({
