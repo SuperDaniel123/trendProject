@@ -1,15 +1,19 @@
 <template>
   <div id="app">
-    <keep-alive>
-      <router-view/>
-    </keep-alive>
+    <loading v-if="this.isLoading"></loading>
+    <router-view/>
+
   </div>
 </template>
 
 <script>
-import {mapMutations} from 'vuex'
+import {mapMutations,mapGetters} from 'vuex'
+import loading from '../src/components/loading'
 export default {
   name: 'App',
+  components:{
+    loading
+  },
   created(){
     if(this.$store.getters.setMID){
       this.login(true)
@@ -18,6 +22,9 @@ export default {
       // alert('请先登录');
       this.$router.push('/login')
     }
+  },
+  computed:{
+    ...mapGetters(['isLoading'])
   },
   methods:{
     ...mapMutations({

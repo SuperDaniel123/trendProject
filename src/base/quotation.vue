@@ -88,6 +88,7 @@ export default {
       realPrice:''
     }
   },
+  
   methods:{
       chartsNode(value,disabled){
         this.eNode = value
@@ -159,7 +160,7 @@ export default {
           }
       },
       wsCurrPriceReal(){	//初始化端口连接-DONE
-        this.wsCurr2 = new WebSocket('ws://192.168.1.194:16888');	//ws://mid.price.fcczq.com:16888
+        this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
         this.wsCurr2.onmessage = (e)=>{            
             let data = eval("("+e.data+")");
             if(data['sendid']){

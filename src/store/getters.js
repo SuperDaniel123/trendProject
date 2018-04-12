@@ -6,6 +6,9 @@ export const isLogin = state => state.isLogin
 export const indexStateS = state => state.indexState
 //个人信息
 export const userInfo = state => state.user
+
+//loading
+export const isLoading = state => state.isloading
 // //列表
 // export const mkChang = state => state.mkList
 // //可选列表

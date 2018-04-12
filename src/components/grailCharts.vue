@@ -267,7 +267,7 @@ export default {
         },
 
         Kline(min){
-            this.theLine = new WebSocket('ws://192.168.1.194:16999');	//ws://mid.price.fcczq.com:16888
+            this.theLine = new WebSocket('ws://price.fa513.cn:16999/');
             this.theLine.onmessage = (e)=>{   
             var data =JSON.parse(e.data);
                 // 握手

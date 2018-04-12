@@ -3,10 +3,11 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
-          <li class="clearfix">结余<span v-text="property.wolBalance"></span></li>
+          <li class="clearfix">当前盈亏<span v-text="property.wolBalance"></span></li>
           <li class="clearfix">净值<span v-text="property.fBalance"></span></li>
           <li class="clearfix">预存值<span v-text="property.aBalance"></span></li>
           <li class="clearfix">可用预付款<span v-text="property.Balance"></span></li>
+          <li class="clearfix">预存款比例<span v-text="scale"></span></li>
       </ul>
       <div class="line"></div>
       <ul class="piceLine">
@@ -61,7 +62,10 @@ export default {
         }
     },
     computed:{
-      ...mapGetters(['setMID'])
+      ...mapGetters(['setMID']),
+      scale(){
+          return ((this.property.fBalance / this.property.aBalance) * 100).toFixed(2) + '%'
+      }
     },
     data(){
         return{
@@ -95,7 +99,6 @@ export default {
                     console.log(data.ErrorMsg)
                     return
                 }
-                console.log(data)
                 if(this.piceLine.length == 0 ){
                     for(let i = 0; i <data.Data.length ; i++){
                         let temp = data.Data[i];
@@ -112,6 +115,7 @@ export default {
                     }
                 }
             })
+            this.userFund()
         },
         closeOut(id){
             let c = confirm("是否平仓?")

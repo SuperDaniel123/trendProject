@@ -91,7 +91,6 @@ export default {
                     
                 }
                 this.mkChange = res.data.Data
-                console.log(this.mkChange)
                 this.excludeList()
 
             })
@@ -139,7 +138,7 @@ export default {
             })
         },
         wsCurrPriceCONN(){	//初始化端口连接-DONE
-            this.wsCurrPrice = new WebSocket('ws://192.168.1.194:16888');	//ws://mid.price.fcczq.com:16888
+            this.wsCurrPrice = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
             this.wsCurrPrice.onmessage = (e)=>{            
                 let data = eval("("+e.data+")");
                 if(data['sendid']){

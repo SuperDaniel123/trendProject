@@ -29,13 +29,20 @@ var mid = sessionStorage.getItem('MID');
 
 //判断登录全局守卫
 router.beforeEach((to, from, next) => {
-  console.log(to)
   if(to.path === '/login'){
     next()
   }else if(store.getters.isLogin == false){
     // alert('请先登录')
     next('/login')
   }else{
+    store.commit('IS_LOADING', true)
     next();
   }
+})
+
+router.afterEach( route => {
+  setTimeout(function () {
+    store.commit('IS_LOADING', false)
+  },800)
+    
 })

@@ -140,7 +140,7 @@ export default {
             )
         },
         wsCurrPriceCONN(){	//初始化端口连接-DONE
-            this.wsCurrPrice = new WebSocket('ws://192.168.1.194:16999');	//ws://mid.price.fcczq.com:16888
+            this.wsCurrPrice = new WebSocket('ws://price.fa513.cn:16999/');	//ws://mid.price.fcczq.com:16888
             this.wsCurrPrice.onmessage = (e)=>{   
                 var data =JSON.parse(e.data); //eval("("+e.data+")");
                     // 握手
@@ -161,7 +161,7 @@ export default {
 
 
         wsCurrPriceReal(){	//初始化端口连接-DONE
-            this.wsCurr2 = new WebSocket('ws://192.168.1.194:16888');	//ws://mid.price.fcczq.com:16888
+            this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
             this.wsCurr2.onmessage = (e)=>{            
                 let data = eval("("+e.data+")");
                 if(data['sendid']){
