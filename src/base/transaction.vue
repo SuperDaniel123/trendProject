@@ -10,8 +10,8 @@
       </ul>
       <div class="line"></div>
       <ul class="piceLine">
-          <li v-for="(item,index) in this.piceLine" :key="index" :class="[item.state == false? '':'show']" @click="getShow(index)">
-              <div class="basic">
+          <li v-for="(item,index) in this.piceLine" :key="index" :class="[item.state == false? '':'show']" >
+              <div class="basic" @click="getShow(index)">
                     <div class="title">
                         <h3 v-text="item.Name"></h3>
                         <span>买入: {{item.Quantity}}</span>
@@ -22,13 +22,15 @@
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
-                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text=" item.ProfitOrLoss || '-'"></h2>
+                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text=" item.WOL || '-'"></h2>
               </div>
               <ul class="more">
                   <li class="clearfix">止损<span v-text="item.StopLoss"></span></li>
-                  <li class="clearfix">获利<span v-text="item.ProfitOrLoss || '-'"></span></li>
+                  <li class="clearfix">获利<span v-text="item.WOL || '-'"></span></li>
                   <li class="clearfix">库存量<span v-text="item.TakeProfit"></span></li>
                   <li class="clearfix">手续费<span v-text="item.OrderFee"></span></li>
+                  <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
+                  
               </ul>
           </li> 
       </ul>
@@ -93,7 +95,7 @@ export default {
                     console.log(data.ErrorMsg)
                     return
                 }
-
+                console.log(data)
                 if(this.piceLine.length == 0 ){
                     for(let i = 0; i <data.Data.length ; i++){
                         let temp = data.Data[i];
@@ -110,6 +112,32 @@ export default {
                     }
                 }
             })
+        },
+        closeOut(id){
+            let c = confirm("是否平仓?")
+            if(c){
+                let opt = {
+                    MID:this.setMID,
+                    OrderID:id
+                }
+                this.$ajax('/trade/order_finish','post',opt).then(res=>{
+                    let data = res.data;
+                    if(data.ResultCD != 200){
+                        alert(data.ErrorMsg)
+                        return
+                    }
+                    alert('成功');
+                    for(let i = 0; i<this.piceLine.length; i++){
+                        let temp = this.piceLine[i]
+                        for(let key in temp){
+                            if(temp[key] == id){
+                                this.piceLine.splice(i, 1)
+                            }
+                        }
+                    }
+                    this.userFund()
+                })
+            }
         }
     }
 }
@@ -184,7 +212,7 @@ export default {
         color:@blue;
     }
     .more{
-        height:4rem;
+        // height:6rem;
         line-height: 2rem;
         background: @bgGray;
         display: flex;
@@ -196,11 +224,19 @@ export default {
             span{
                 float: right;
             }
+            button{
+                width:5rem;
+                height:1.8rem;
+                background: @blue;
+                color:@white;
+                .border-radiusS;
+                font-size:@font1
+            }
         }
     }
     li.show{
         transition: all 0.2s;
-        height:10rem;
+        height:12rem;
     }
 
 }

@@ -7,7 +7,9 @@ function pageHeight(dom){
 
 //时间戳转日期
 function timestamp(time){
-    if(time.length != 10){
+    
+    let i = time + ''
+    if(i.length != 10){
         return time;
     }
     let date = new Date(time * 1000);

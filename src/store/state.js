@@ -7,12 +7,10 @@ const state = {
     indexState:0,
 
     //个人信息
-    user:''
+    user:'',
 
-    //产品列表
-    // mkList:[],
-    //可选列表
-    // choosable:[]
+    //过度loading
+    isloading:false
 }
 
 export default state

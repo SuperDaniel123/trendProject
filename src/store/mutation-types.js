@@ -8,6 +8,8 @@ export const INDEX_STATE = "INDEX_STATE"
 
 export const USER_INFO = "USER_INFO"
 
+//过度loading
+export const IS_LOADING = 'IS_LOADING'
 
 //产品列表
 // export const MK_LIST = "MK_LIST"

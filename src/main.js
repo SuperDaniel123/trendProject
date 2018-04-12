@@ -29,6 +29,7 @@ var mid = sessionStorage.getItem('MID');
 
 //判断登录全局守卫
 router.beforeEach((to, from, next) => {
+  console.log(to)
   if(to.path === '/login'){
     next()
   }else if(store.getters.isLogin == false){

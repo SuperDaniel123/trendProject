@@ -3,13 +3,30 @@
     <back-header :headline="headline"></back-header>
     <div class="content">
         <div class="line"></div>
-          <scroller lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
+
+          <!--充值记录-->
+          <scroller v-if="this.$route.query.type == 'deposit'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
               <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}元</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
           </scroller>
+          <!--交易记录-->
+          <ul v-if="this.$route.query.type == 'history'" class="history">
+            <li v-for="item in dataList" :key="item.index">
+              <h2>{{item.FinalTime}} <span v-text="item.Name"></span></h2>
+              <div class="text">
+                  <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
+                  <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
+                  <p class="clearfix">库存费:<i v-text="item.OrderDeposit"></i></p>
+                  <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
+                  <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
+                  <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
+              </div>
+
+            </li>
+          </ul>
         <div class="line"></div>
     </div>
   </div>
@@ -32,11 +49,20 @@ export default {
     this.getRequest(this.$route.query.type)
   },
   computed:{
-      ...mapGetters(['setMID'])
+      ...mapGetters(['setMID']),
+      headline(){
+        switch(this.$route.query.type){
+          case 'deposit' :{
+            return '预存记录'
+          }
+          case 'history' :{
+            return '交易记录'
+          }
+        }
+      }
   },
   data () {
     return {
-      headline:'预存记录',
       dataList:[],
       page:1,
       loadIf:true,
@@ -46,7 +72,6 @@ export default {
   },
   
   methods:{
-    
     onScrollBottom () {
         if (this.onFetching) {
           // do nothing
@@ -89,6 +114,23 @@ export default {
             this.dataList = arr
           })
         }
+        case 'history' :{
+          this.$ajax('/trade/history','post',{MID:this.setMID}).then(res=>{
+              let data = res.data.Data
+              if(res.status != 200){
+                  console.log('error!')
+                  return
+              }
+              for(let i = 0; i<data.length; i++){
+                let temp = data[i];
+                temp['FinalTime'] = timestamp(temp['FinalTime'])
+              }
+              this.dataList = data
+          })
+          
+
+
+        }
       
       }
     }
@@ -118,6 +160,30 @@ export default {
     text-align: center;
     line-height: 4rem;
   }
-  
+}
+
+.history{
+  padding:0 1rem;
+  li{
+    padding:0 1rem;
+    background: @white;
+    .bottomRim;
+    h2{
+      line-height:2.5rem;
+      span{
+        float:right
+      }
+    }
+    .text{
+      display: flex;
+      flex-wrap:wrap;
+      p{
+        width:50%;
+        font-size:@font1;
+        color:@font-Sgray;
+        line-height: 1.8rem;
+      }
+    }
+  }
 }
 </style>

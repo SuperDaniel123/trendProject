@@ -10,6 +10,26 @@
           <li class="clearfix">结余：<span v-text="property.aBalance"></span></li>
       </ul>
       <div class="recordOther">
+          <h2>交易记录</h2>
+          <div class="noneRecord" v-if="this.trecord =='' || this.trecord.length == 0">暂无记录</div>
+          <ul class="otherTeams" v-if="!this.trecord || this.trecord.length != 0">
+              <li :class="[item.state == false? 'noneStyle clearfix':'tStyle clearfix']" v-for="(item,index) in this.trecord" :key="index" @click="getShow(index)">
+                  {{item.FinalTime}}<span v-text="item.Name"></span>
+                  <div class="view">
+                      <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
+                      <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
+                      <p class="clearfix">库存费:<i v-text="item.OrderDeposit"></i></p>
+                      <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
+                      <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
+                      <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
+                  </div>
+              </li>
+              <div class="more clearfix">
+                  <router-link :to="{path:'/recordList',query:{type:'history'}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
+              </div>
+          </ul>
+      </div>
+      <div class="recordOther">
           <h2>充值记录</h2>
           <div class="noneRecord" v-if="this.recharge =='' || this.recharge.length == 0">暂无记录</div>
           <ul class="otherTeams" v-if="!this.recharge || this.recharge.length != 0">
@@ -32,26 +52,7 @@
           </ul>
       </div>
 
-      <div class="recordOther">
-          <h2>交易记录</h2>
-          <div class="noneRecord" v-if="this.trecord =='' || this.trecord.length == 0">暂无记录</div>
-          <ul class="otherTeams" v-if="!this.trecord || this.trecord.length != 0">
-              <li :class="[item.state == false? 'noneStyle clearfix':'tStyle clearfix']" v-for="(item,index) in this.trecord" :key="index" @click="getShow(index)">
-                  {{item.FinalTime}}<span v-text="item.Name"></span>
-                  <div class="view">
-                      <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
-                      <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
-                      <p class="clearfix">库存费:<i v-text="item.OrderDeposit"></i></p>
-                      <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                      <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
-                      <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
-                  </div>
-              </li>
-              <div class="more clearfix">
-                  <router-link :to="{path:'/recordList',query:{type:'history '}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
-              </div>
-          </ul>
-      </div>
+
   </div>
 </template>
 
@@ -144,8 +145,11 @@ export default {
                 if(res.status != 200){
                     return
                 }
-                
-                this.trecord = res.data.Data
+                let arr = []
+                for(let i = 0; i<3; i++){
+                    arr.push(res.data.Data[i])
+                }
+                this.trecord = arr
                 if(this.trecord.length == '0' || !this.trecord){
                     return;
                 }

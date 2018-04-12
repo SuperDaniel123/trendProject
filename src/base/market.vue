@@ -3,22 +3,22 @@
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
-          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click=" getPush(item.Code)" >
+          <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click="getPush(item.Code,item.Ask)" >
               <div class="title">
                   <h2 v-text="codeName(item.Code)"></h2>
-                  <span>点差:{{item.Diff}}</span>
+                  <span>点差:{{item.Diff|| '-'}}</span>
                   <i v-if="item.return_UpDown == 1" class="fa fa-caret-up"></i>               
                   <i v-if="item.return_UpDown == 2" class="fa fa-caret-down"></i>         
               </div>
               
               <ul class="priceBox">
                   <li>
-                      <h3 v-text="item.Ask"></h3>
-                      <span>最高:{{item.Max}}</span>
+                      <h3 v-text="item.Ask || '-'"></h3>
+                      <span>最高:{{item.Max || '-'}}</span>
                   </li>
                   <li>
-                      <h3 v-text="item.Bid"></h3>
-                      <span>最低{{item.Min}}</span>
+                      <h3 v-text="item.Bid|| '-'"></h3>
+                      <span>最低{{item.Min || '-'}}</span>
                   </li>
               </ul>
           </li>
@@ -90,8 +90,8 @@ export default {
                     }
                     
                 }
-                console.log(this.itemID)
                 this.mkChange = res.data.Data
+                console.log(this.mkChange)
                 this.excludeList()
 
             })
@@ -119,7 +119,10 @@ export default {
             this.wsCurrPriceCONN();
         },
 
-        getPush(pro){
+        getPush(pro,ask){
+            if(!ask){
+                return;
+            }
             let id;
             for(let i = 0; i<this.itemID.length; i++){
                 let entity = this.itemID[i]
@@ -156,6 +159,7 @@ export default {
                     }
                 }
                 this.mkChange = list
+                
 
             }
             
@@ -187,6 +191,7 @@ export default {
         width:100%;
         text-align: center;
         margin-top:1rem;
+        padding-bottom: 1rem;
         i.fa{
             font-size:2rem;
             color:@font-Sgray;

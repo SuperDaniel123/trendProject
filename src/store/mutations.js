@@ -21,6 +21,9 @@ const mutations = {
         state.user = info
     },
 
+    [types.IS_LOADING](state,load){
+        state.isLogin = load
+    }
 
 }
 
