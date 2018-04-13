@@ -34,7 +34,7 @@
 <script>
 import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
-import { setTimeout } from 'timers';
+import { setTimeout } from 'timers'; 
 export default {
     components:{
         iHeader,
@@ -162,12 +162,6 @@ export default {
 
             }
             
-
-                // pubPrice.updateData(e);
-            // wsCurrPrice.onclose = ()=> {
-            //     // console.log("CurrPrice reConnect :(");
-            //     setTimeout('wsCurrPriceCONN()',3000);
-            // };
             this.wsCurrPrice.onerror = () => {
                 /*if(typeof layer !='undefined'){
                     layer.open({content:'WS连接服务器失败请稍候再试',skin:'msg',time:2})

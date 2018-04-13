@@ -18,8 +18,8 @@
                         <span>买入: {{item.Quantity}}</span>
                     </div>
                     <p :class="[item.PayType == '0'? 'red':'blue']">
-                        <span v-text="item.CurrentPrice"></span>
-                        <span v-text="item.ClosePrice"></span>
+                        <span>{{item.CurrentPrice}}</span>
+                        <!-- <span v-text="current(item.Code)" style="display:inline-block;width:4rem;"></span> -->
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
@@ -31,8 +31,34 @@
                   <li class="clearfix">库存量<span v-text="item.TakeProfit"></span></li>
                   <li class="clearfix">手续费<span v-text="item.OrderFee"></span></li>
                   <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
-                  
+                  <li class="clearfix"><button @click="flag = true">修改止盈止损</button></li>
               </ul>
+              <div class="order_edit" v-if="flag">
+                  <div class="inbox">
+                      <h2>{{item.Name}}<span>订单号：{{item.OrderSN}}</span></h2>
+                      <ul class="editList">
+                          <li>买入<span v-text="item.CurrentPrice"></span></li>
+                          <li>止盈<span v-text="item.TakeProfit"></span></li>
+                          <li>止损<span v-text="item.StopLoss"></span></li>
+                          <li>当前盈亏<span v-text="item.WOL"></span></li>
+                      </ul>
+                      <ul class="amend">
+                          <li>
+                              修改止盈(填0为不限)：
+                              <input type="number" v-model="TakeProfit" placeholder="0" />
+                          </li>
+                          <li>
+                              修改止盈(填0为不限)：
+                              <input type="number" v-model="StopLoss" placeholder="0" />
+                          </li>
+                      </ul>
+                      <div class="buttonS">
+                            <button @click="flag = false">取消</button>
+                            <button @click="order_edit(item.OrderID)">完成</button>
+                      </div>
+
+                  </div>
+              </div>
           </li> 
       </ul>
   </div>
@@ -48,7 +74,7 @@ export default {
     },
     created(){
         this.holder()
-        this.userFund()
+        // this.wsCurrPriceReal()
     },
     mounted(){
         this.clock = setInterval(()=>{
@@ -60,12 +86,15 @@ export default {
         if(this.clock){
             clearInterval(this.clock)
         }
+        // this.wsCurr2.close();
     },
     computed:{
       ...mapGetters(['setMID']),
       scale(){
           return ((this.property.fBalance / this.property.aBalance) * 100).toFixed(2) + '%'
-      }
+      },
+      
+      
     },
     data(){
         return{
@@ -73,10 +102,26 @@ export default {
             property:[],
             piceLine:[],
             //挂在计时器
-            clock:''
+            clock:'',
+            wsCurr2:'',
+            //开关
+            flag:false,
+            //止盈止损修改
+            TakeProfit:'',
+            StopLoss:''
+            
+            // askList:[]
         }
     },
     methods:{
+        // current(code){
+        //     for(let i = 0; i<this.askList.length; i++){
+        //         let temp = this.askList[i]
+        //         if(temp['Code'] == code){  
+        //             return temp["Ask"]
+        //         }
+        //     }
+        // },
         getShow(id){
             this.piceLine[id].state = !this.piceLine[id].state
         },
@@ -95,10 +140,13 @@ export default {
         holder(){
             this.$ajax('/trade/holder','post',{MID:this.setMID}).then((res)=>{
                 let data = res.data;
+                this.askList = data.Data
                 if(!data.ResultCD){
                     console.log(data.ErrorMsg)
                     return
                 }
+                
+                console.log(data)
                 if(this.piceLine.length == 0 ){
                     for(let i = 0; i <data.Data.length ; i++){
                         let temp = data.Data[i];
@@ -114,6 +162,7 @@ export default {
                         }
                     }
                 }
+                
             })
             this.userFund()
         },
@@ -142,7 +191,52 @@ export default {
                     this.userFund()
                 })
             }
+        },
+        order_edit(id){
+            let opt = {
+                MID:this.setMID,
+                OrderID:id,
+                StopLoss:this.StopLoss == ''? 0 : this.StopLoss,
+                TakeProfit:this.TakeProfit == ''? 0 : this.TakeProfit
+            }
+            this.$ajax('/trade/order_edit','post',opt).then(res=>{
+                let data = res.data;
+                if(data.ResultCD != 200){
+                    alert(data.ErrorMsg)
+                    return
+                }
+                alert('修改成功')
+                this.flag = false;
+                this.TakeProfit=''
+                this.StopLoss=''
+
+            })
         }
+    //     wsCurrPriceReal(){	//初始化端口连接-DONE
+    //         this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
+    //         this.wsCurr2.onmessage = (e)=>{            
+    //             let data = eval("("+e.data+")");
+    //             if(data['sendid']){
+    //                 this.wsCurr2.send('{"senDd":"'+data['sendid']+'"}');
+    //             }
+    //             if(!data.hasOwnProperty('Code')){
+    //                 return;
+    //             }
+                
+    //             let list = this.askList;
+    //             for(let i = 0; i < list.length; i++){
+    //                 if(list[i]['Code'] == data['Code']){
+    //                     list.splice(i,1,data)
+    //                 }
+    //             }
+    //             this.askList = list
+               
+    //         }
+    //         this.wsCurr2.onerror = () => {
+    //             console.log("Error!!");
+    //         };
+    //   }
+
     }
 }
 </script>
@@ -229,7 +323,7 @@ export default {
                 float: right;
             }
             button{
-                width:5rem;
+                padding:0 0.5rem;
                 height:1.8rem;
                 background: @blue;
                 color:@white;
@@ -243,5 +337,64 @@ export default {
         height:12rem;
     }
 
+}
+.order_edit{
+    position: fixed;
+    top:0;
+    left: 0;
+    z-index: 99;
+    width:100%;
+    height:100%;
+    background:rgba(0, 0, 0, 0.5);
+    .inbox{
+        width:80%;
+        margin:20% auto 0 auto;
+        background: #fff;
+        padding:0.5rem;
+        .border-radiusS;
+        h2{
+            line-height: 3rem;
+            .bottomRim;
+            span{
+                float: right;
+            }
+        }
+        .editList{
+            display: flex;
+            .bottomRim;
+            li{
+                flex:1;
+                text-align: center;
+                padding:0.5rem 0;
+                line-height: 2rem;
+                span{
+                    display: block;
+                }
+            }
+        }
+        .amend{
+            display: flex;
+            li{
+                padding:1rem;
+                flex: 1;
+                input{
+                    width:100%;
+                    line-height: 2rem;
+                    margin-top:0.5rem;
+                    border:1px solid @bgGray;
+                    text-align:center;
+                }
+            }
+        }
+        .buttonS{
+            display: flex;
+            button{
+                flex:1;
+                margin:0 0.5rem;
+                line-height: 3rem;
+                width:50%;
+            }
+        }
+    }
 }
 </style>

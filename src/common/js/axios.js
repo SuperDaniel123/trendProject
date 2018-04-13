@@ -66,10 +66,15 @@ let api = function(url,type,options){
             instance.post(url,qs.stringify(opt))
 
             .then(response => {
+                if(response.data.ResultCD == 'E999'){
+                    sessionStorage.removeItem('MID')
+                    location.reload()
+                    return;
+                }
                 resolve(response)
             })
             .catch(error => {
-                alert("loading failed")
+                console.log("loading failed")
             })
         }else if(type === 'GET' || type === 'get'){
             let getOpt = qs.stringify(opt);
