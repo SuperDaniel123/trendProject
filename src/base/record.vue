@@ -2,13 +2,13 @@
   <div>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
-      <ul class="property" v-cloak>
+      <!-- <ul class="property" v-cloak>
           <li class="clearfix">利润：<span v-text="property.Bid"></span></li>
           <li class="clearfix">信用：<span v-text="property.Point"></span></li>
           <li class="clearfix">入金：<span v-text="property.fBalance"></span></li>
           <li class="clearfix">出金：<span v-text="property.wBalance"></span></li>
           <li class="clearfix">结余：<span v-text="property.aBalance"></span></li>
-      </ul>
+      </ul> -->
       <div class="recordOther">
           <h2>交易记录</h2>
           <div class="noneRecord" v-if="this.trecord =='' || this.trecord.length == 0">暂无记录</div>
@@ -17,11 +17,11 @@
                   {{item.FinalTime}}<span v-text="item.Name"></span>
                   <div class="view">
                       <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
-                      <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
-                      <p class="clearfix">库存费:<i v-text="item.OrderDeposit"></i></p>
+                      <p class="clearfix">止盈:<i v-text="item.TakeProfit"></i></p>
+                      <p class="clearfix">库存费:<i v-text="0"></i></p>
                       <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
                       <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
-                      <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
+                      <p class="clearfix">获利:<i v-text="item.ProfitOrLoss"></i></p>
                   </div>
               </li>
               <div class="more clearfix">
@@ -145,8 +145,12 @@ export default {
                 if(res.status != 200){
                     return
                 }
+                let th = 3
+                if(res.data.Data.length < 3){
+                    th = res.data.Data.length
+                }
                 let arr = []
-                for(let i = 0; i<3; i++){
+                for(let i = 0; i < th; i++){
                     arr.push(res.data.Data[i])
                 }
                 this.trecord = arr

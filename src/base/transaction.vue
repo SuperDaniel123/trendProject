@@ -4,9 +4,9 @@
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
           <li class="clearfix">当前盈亏<span v-text="property.wolBalance"></span></li>
-          <li class="clearfix">净值<span v-text="property.fBalance"></span></li>
-          <li class="clearfix">预存值<span v-text="property.aBalance"></span></li>
-          <li class="clearfix">可用预付款<span v-text="property.Balance"></span></li>
+          <li class="clearfix">预存款<span v-text="property.fBalance"></span></li>
+          <li class="clearfix">净值<span v-text="((+property.Balance * 100) + (+property.wolBalance * 100)) / 100"></span></li>
+          <li class="clearfix">余额<span v-text="property.Balance"></span></li>
           <li class="clearfix">预存款比例<span v-text="scale"></span></li>
       </ul>
       <div class="line"></div>
@@ -19,16 +19,17 @@
                     </div>
                     <p :class="[item.PayType == '0'? 'red':'blue']">
                         <span>{{item.CurrentPrice}}</span>
-                        <!-- <span v-text="current(item.Code)" style="display:inline-block;width:4rem;"></span> -->
+                        <i class="fa fa-angle-right" style=" color:#999;"></i>
+                        <span v-text="currentPice(item.Code)"></span>
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
                     <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text=" item.WOL || '-'"></h2>
               </div>
               <ul class="more">
+                  <li class="clearfix">止盈<span v-text="item.TakeProfit"></span></li>
                   <li class="clearfix">止损<span v-text="item.StopLoss"></span></li>
-                  <li class="clearfix">获利<span v-text="item.WOL || '-'"></span></li>
-                  <li class="clearfix">库存量<span v-text="item.TakeProfit"></span></li>
+                  <li class="clearfix">库存量<span>0</span></li>
                   <li class="clearfix">手续费<span v-text="item.OrderFee"></span></li>
                   <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
                   <li class="clearfix"><button @click="flag = true">修改止盈止损</button></li>
@@ -74,7 +75,7 @@ export default {
     },
     created(){
         this.holder()
-        // this.wsCurrPriceReal()
+        this.wsCurrPriceReal()
     },
     mounted(){
         this.clock = setInterval(()=>{
@@ -86,12 +87,15 @@ export default {
         if(this.clock){
             clearInterval(this.clock)
         }
-        // this.wsCurr2.close();
+        if(this.piceLine.length != 0){
+            this.wsCurr2.close();
+        }
+        
     },
     computed:{
       ...mapGetters(['setMID']),
       scale(){
-          return ((this.property.fBalance / this.property.aBalance) * 100).toFixed(2) + '%'
+          return (((((+this.property.Balance * 100) + (+this.property.wolBalance * 100)) / 100) / (+this.property.fBalance)) * 100).toFixed(3) + '%'
       },
       
       
@@ -108,20 +112,12 @@ export default {
             flag:false,
             //止盈止损修改
             TakeProfit:'',
-            StopLoss:''
+            StopLoss:'',
             
-            // askList:[]
+            askList:[]
         }
     },
     methods:{
-        // current(code){
-        //     for(let i = 0; i<this.askList.length; i++){
-        //         let temp = this.askList[i]
-        //         if(temp['Code'] == code){  
-        //             return temp["Ask"]
-        //         }
-        //     }
-        // },
         getShow(id){
             this.piceLine[id].state = !this.piceLine[id].state
         },
@@ -140,13 +136,19 @@ export default {
         holder(){
             this.$ajax('/trade/holder','post',{MID:this.setMID}).then((res)=>{
                 let data = res.data;
-                this.askList = data.Data
                 if(!data.ResultCD){
                     console.log(data.ErrorMsg)
                     return
                 }
                 
-                console.log(data)
+                if(this.askList.length == 0){
+                    let arr = data.Data;
+                    for(let i = 0; i < arr.length; i++){
+                        this.askList.push(arr[i])
+                    }
+                }
+                
+                // console.log(data)
                 if(this.piceLine.length == 0 ){
                     for(let i = 0; i <data.Data.length ; i++){
                         let temp = data.Data[i];
@@ -211,31 +213,40 @@ export default {
                 this.StopLoss=''
 
             })
-        }
-    //     wsCurrPriceReal(){	//初始化端口连接-DONE
-    //         this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
-    //         this.wsCurr2.onmessage = (e)=>{            
-    //             let data = eval("("+e.data+")");
-    //             if(data['sendid']){
-    //                 this.wsCurr2.send('{"senDd":"'+data['sendid']+'"}');
-    //             }
-    //             if(!data.hasOwnProperty('Code')){
-    //                 return;
-    //             }
-                
-    //             let list = this.askList;
-    //             for(let i = 0; i < list.length; i++){
-    //                 if(list[i]['Code'] == data['Code']){
-    //                     list.splice(i,1,data)
-    //                 }
-    //             }
-    //             this.askList = list
-               
-    //         }
-    //         this.wsCurr2.onerror = () => {
-    //             console.log("Error!!");
-    //         };
-    //   }
+        },
+        wsCurrPriceReal(){	//初始化端口连接-DONE
+            if(this.piceLine.length == 0){
+                return
+            }
+            this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
+            this.wsCurr2.onmessage = (e)=>{            
+                let data = eval("("+e.data+")");
+                if(data['sendid']){
+                    this.wsCurr2.send('{"senDd":"'+data['sendid']+'"}');
+                }
+                if(!data.hasOwnProperty('Code')){
+                    return;
+                }
+                for(let i = 0; i <this.askList.length; i++){
+                    let temp = this.askList[i]
+                    if(temp['Code'] == data['Code']){
+                        this.askList.splice(i,1,data)
+                    }
+                }
+            }
+            this.wsCurr2.onerror = () => {
+                console.log("Error!!");
+            };
+      },
+      //获取当前价
+      currentPice(code){
+          let arr = this.askList
+          for(let i = 0; i <arr.length; i++){
+              if(arr[i]['Code'] == code){
+                  return arr[i]['Ask']
+              }
+          }
+      }
 
     }
 }
@@ -286,8 +297,8 @@ export default {
         }
         p{
             margin-top:0.5rem;
-            span{
-                margin-right:@font1;
+            i{
+                padding:0 0.2rem;
             }
         }
         p.red{
