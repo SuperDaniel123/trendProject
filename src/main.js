@@ -40,9 +40,9 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-router.afterEach( route => {
-  setTimeout(function () {
-    store.commit('IS_LOADING', false)
-  },800)
+// router.afterEach( route => {
+//   setTimeout(function () {
+//     store.commit('IS_LOADING', false)
+//   },800)
     
-})
+// })

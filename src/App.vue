@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <loading v-if="this.isLoading"></loading>
+    <!-- <loading v-if="this.isLoading"></loading> -->
     <router-view/>
 
   </div>
@@ -23,9 +23,9 @@ export default {
       this.$router.push('/login')
     }
   },
-  computed:{
-    ...mapGetters(['isLoading'])
-  },
+  // computed:{
+  //   ...mapGetters(['isLoading'])
+  // },
   methods:{
     ...mapMutations({
       login:'IS_LOGIN'

@@ -1,5 +1,6 @@
 <template>
   <div>
+      <loading v-if="loadFlag"></loading>
       <i-header :headline="headline"></i-header>
       <div class="userBox">
           <router-link to="/personal">
@@ -38,9 +39,11 @@
 <script>
 import iHeader from '@/components/i-header'
 import {mapGetters,mapMutations} from 'vuex'
+import loading from '../components/loading'
 export default {
     components:{
-        iHeader
+        iHeader,
+        loading
     },
     computed:{
         ...mapGetters([
@@ -49,11 +52,16 @@ export default {
     },
     created(){
         this.getUserDatum()
+        setTimeout(()=>{
+            this.loadFlag = false;
+        },800)
     },
     data(){
         return{
             headline:'我的',
             userDatum:'',
+            //loading开关
+            loadFlag:true
         }
     },
     watch:{

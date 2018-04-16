@@ -10,7 +10,7 @@ const state = {
     user:'',
 
     //过度loading
-    isloading:false
+    // isloading:false
 }
 
 export default state

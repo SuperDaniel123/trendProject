@@ -1,5 +1,6 @@
 <template>
   <div class="market">
+      <loading v-if="loadFlag"></loading>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
@@ -35,11 +36,16 @@
 import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
 import { setTimeout } from 'timers'; 
+import loading from '../components/loading'
 export default {
     components:{
         iHeader,
+        loading
     },
     created(){
+        setTimeout(()=>{
+            this.loadFlag = false;
+        },800)
         this.getPost();
     },
     computed:{
@@ -54,7 +60,9 @@ export default {
             //产品itemID
             itemID:[],
             mkChange:[], 
-            wsCurrPrice:''
+            wsCurrPrice:'',
+            //loading开关
+            loadFlag:true
         }
     },
     methods:{

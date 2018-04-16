@@ -1,5 +1,8 @@
 <template>
   <div class="recordList">
+    <transition name="fade">
+      <div class="bgshow" v-show="flag" @click="flag = false"></div>
+    </transition>
     <back-header :headline="headline"></back-header>
     <div class="content" style="padding-bottom:0;">
       <div class="line"></div>
@@ -16,12 +19,18 @@
       <div class="line"></div>
 
       <div class="buyTeams">
-        <tab :line-width="2" custom-bar-width="2rem" active-color="#2197e9" >
-          <tab-item selected @on-item-click="getData">买入</tab-item>
-          <tab-item @on-item-click="getData">卖出</tab-item>
-        </tab>
+        <div class="buttonTeams">
+            <button @click="getData(0)">买入</button>
+            <button @click="getData(1)">卖出</button>
+        </div>
+        <transition name="fadeDown">
+          <div class="dealDetails" v-if="flag">
+            <h2>{{buysNode == 0? '买入':'卖出'}}<i class="fa fa-close" @click="flag = false"></i></h2>
+            <quotation-dest :deal="this.buysNode" :real="this.realPrice"></quotation-dest>
+          </div>
+        </transition>
 
-        <quotation-dest :deal="this.buysNode" :real="this.realPrice"></quotation-dest>
+          
 
       </div>
       
@@ -32,7 +41,7 @@
 <script>
 import backHeader from '@/components/back-header'
 import quotationDest from '@/components/quotationDest'
-import { Checker, CheckerItem, Tab, TabItem} from 'vux'
+import { Checker, CheckerItem} from 'vux'
 import geailCharts from '@/components/grailCharts'
 import timeCharts from '@/components/timeCharts'
 export default {
@@ -41,8 +50,6 @@ export default {
     backHeader,
     Checker, 
     CheckerItem,
-    Tab,
-    TabItem,
     quotationDest,
     geailCharts,
     timeCharts
@@ -60,7 +67,7 @@ export default {
   },
   data () {
     return {
-      buysNode:0,
+      buysNode:null,
       timeFrame: [
         {
           key: '0',
@@ -85,7 +92,9 @@ export default {
       ],
       eNode:{key: '0',value: '时分'},
       wsCurr2:'',
-      realPrice:''
+      //现价
+      realPrice:'',
+      flag:false
     }
   },
   
@@ -95,6 +104,7 @@ export default {
       },
       getData(index){
         this.buysNode = index;
+        this.flag = true
       },
       codeName(code){
           switch(code){
@@ -183,9 +193,24 @@ export default {
 
 <style lang='less' scoped>
 @import '../common/css/common.less';
+.bgshow{
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top:0;
+  left: 0;
+  z-index: 998;
+  background: rgba(0, 0, 0, 0.2)
+}
+.fade-enter-active, .fade-leave-active {
+  transition:opacity .5s
+}
+.fade-enter, .fade-leave-active {
+  opacity: 0
+}
 #echarts{
   width:100%;
-  height:25rem;
+  height:42rem;
   background: @white;
 }
 .line{
@@ -212,9 +237,65 @@ export default {
     }
   }
 }
-
 .buyTeams{
   background:@white;
+}
+.buttonTeams{
+  position: fixed;
+  bottom: 0;
+  width:100%;
+  display: flex;
+  button{
+    flex: 1;
+    line-height: 3.5rem;
+    color:@white;
+    font-size:@font1-25;
+  }
+  button:nth-of-type(1){
+    background: @blue;
+  }
+  button:nth-of-type(2){
+    background: @red;
+  }
+}
+.dealDetails{
+  .topRim;
+  width:100%;
+  position: fixed;
+  bottom: 0;
+  z-index: 999;
+  background: @white;
+  h2{
+    padding:0 0.5rem 0 1rem;
+    line-height: 3rem;
+    font-size:@font1-25;
+    color:@font-Sgray;
+    i{
+      width:3rem;
+      height:3rem;
+      float: right;
+      line-height: 3rem;
+      display: inline-block;
+      text-align: center;
+      font-size:1.5rem;
+    }
+  }
+}
 
+.fadeDown-enter-active{
+  animation: fade-Down 0.3s
+}
+
+.fadeDown-leave-active{
+  animation: fade-Down 0.3s reverse;
+}
+
+@keyframes fade-Down{
+  0%  {
+      height:0;
+  }
+  100% {
+      height:20rem;
+  }
 }
 </style>

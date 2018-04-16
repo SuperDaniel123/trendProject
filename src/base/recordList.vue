@@ -7,7 +7,7 @@
           <!--充值记录-->
           <scroller v-if="this.$route.query.type == 'deposit'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
-              <div class="clearfix" v-for="i in dataList1" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}元</span></div>
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}元</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
@@ -64,7 +64,6 @@ export default {
   data () {
     return {
       dataList:[],
-      dataList1:[],
       page:1,
       loadIf:true,
       onFetching:false
@@ -107,13 +106,14 @@ export default {
               this.loadIf = false;
               return;
             }
-            let arr = this.dataList1.concat(res.data.Data)
+            let arr = this.dataList.concat(res.data.Data)
             for(let i = 0; i <arr.length ; i++){
                 let temp = arr[i]
                 temp['SignupTime'] = timestamp(temp['SignupTime'])
             }
-            this.dataList1 = arr
+            this.dataList = arr
           })
+          break;
         }
         case 'history' :{
           this.$ajax('/trade/history','post',{MID:this.setMID}).then(res=>{

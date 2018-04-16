@@ -8,7 +8,7 @@ export const indexStateS = state => state.indexState
 export const userInfo = state => state.user
 
 //loading
-export const isLoading = state => state.isloading
+// export const isLoading = state => state.isloading
 // //列表
 // export const mkChang = state => state.mkList
 // //可选列表

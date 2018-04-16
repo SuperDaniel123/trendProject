@@ -1,5 +1,7 @@
 <template>
   <div class="opeBox">
+      <div class="Lot clearfix">
+        <span>手数</span>
         <div class="priceTeams">
             <button @click="Lot(-5)">-5</button>
             <button @click="Lot(-3)">-3</button>
@@ -7,9 +9,11 @@
             <button @click="Lot(3)">+3</button>
             <button @click="Lot(5)">+5</button>
         </div>
+      </div>
+
         <ul class="operation">
-            <li><span>止损</span><small>(止损价 : {{ getStopLoss(this.real,'loss') }} )</small><x-number :min="0" fillable :step="1" v-model="stopLoss"></x-number></li>
-            <li><span>获利</span><small>(止盈价 : {{ getStopLoss(this.real,'gain') }} )</small><x-number fillable :min="0" :step="1" v-model="earnProfit"></x-number></li>
+            <li><span>止损</span><small>(止损价 : {{ getStopLoss(this.real,'loss') }} )</small><x-number :min="0" fillable :step="100" v-model="stopLoss"></x-number></li>
+            <li><span>获利</span><small>(止盈价 : {{ getStopLoss(this.real,'gain') }} )</small><x-number fillable :min="0" :step="100" v-model="earnProfit"></x-number></li>
             <!-- <li><span>偏差</span><x-number fillable :step="0.1" v-model="deviation"></x-number></li> -->
         </ul>
         <div class="quoBtn">
@@ -25,6 +29,7 @@ export default {
     components:{
         XNumber
     },
+    //升跌，现价
     props:['deal','real'],
     data(){
         return{
@@ -143,28 +148,37 @@ export default {
 <style lang="less">
 @import '../common/css/common.less';
 .opeBox{
-    .priceTeams{
-        text-align: center;
-        width:100%;
-        line-height: 3rem;
-        .bottomRim;
-        input[type="number"]{
-            border:1px solid @bgGray;
-            height:2rem;
-            width:4rem;
-            text-align: center;
+    .Lot{
+        padding:0 1rem 0 2rem;
+        span{
+            line-height: 3rem;
             color:@font-Lgray;
-            margin:0 1rem;
+            float: left;
         }
-        button{
-            color:@white;
-            height:1.8rem;
-            width:3rem;
-            margin:0 0.5rem;
-            background: @blue;
-            .border-radiusS;
+        .priceTeams{
+            float: right;
+            text-align: center;
+            line-height: 3rem;
+            .bottomRim;
+            input[type="number"]{
+                border:1px solid @bgGray;
+                height:2rem;
+                width:4rem;
+                text-align: center;
+                color:@font-Lgray;
+                margin:0 1rem;
+            }
+            button{
+                color:@white;
+                height:1.8rem;
+                width:3rem;
+                margin:0 0.5rem;
+                background: @blue;
+                .border-radiusS;
+            }
         }
     }
+
     .operation{
         width:100%;
         li{

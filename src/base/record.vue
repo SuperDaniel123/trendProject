@@ -1,5 +1,6 @@
 <template>
   <div>
+      <loading v-if="loadFlag"></loading>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <!-- <ul class="property" v-cloak>
@@ -60,10 +61,12 @@
 import iHeader from '@/components/i-header'
 import {timestamp} from '@/common/js/common.js'
 import {mapGetters} from 'vuex'
+import loading from '../components/loading'
 export default {
     components:{
         iHeader,
-        timestamp
+        timestamp,
+        loading
     },
     computed:{
         ...mapGetters(['setMID'])
@@ -73,7 +76,9 @@ export default {
         this.getRecharge()
         this.getTrecord()
         this.getWithdraw()
-        
+        setTimeout(()=>{
+            this.loadFlag = false;
+        },800)
     },
     data(){
         return{
@@ -84,7 +89,9 @@ export default {
             recharge:[],
             //提现记录
             withdraw:'',
-            trecord:[]
+            trecord:[],
+            //loading开关
+            loadFlag:true
         }
     },
     methods:{

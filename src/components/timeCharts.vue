@@ -1,6 +1,6 @@
 <template>
   <div class="timeCharts">
-    <div id="main" style="max-width: 100%;height:25rem"></div>
+    <div id="main" style="max-width: 100%;height:42rem"></div>
     <!-- <div v-text="price"></div> -->
   </div>
 </template>
@@ -38,7 +38,13 @@ export default {
             this.charts = echarts.init(document.getElementById(id))
                 var opt = {
                     coord: [this.sdata.time[this.sdata['time'].length - 1] ,  this.sdata.price[this.sdata.price.length - 1]],
-                    value: this.sdata.price[this.sdata.price.length - 1]
+                    value: this.sdata.price[this.sdata.price.length - 1],
+                    symbol:'rect',
+                    symbolSize:[40,15],
+                    symbolOffset:[20,0],
+                    itemStyle:{
+                        color:'#2197e9'
+                    }
                 }
             this.charts.setOption(
                 {
@@ -57,8 +63,13 @@ export default {
                     },
                     xAxis: {
                         type: 'category',
-                        splitLine: {
-                            show: false
+                        splitLine:{
+                            show: true,
+                            lineStyle:{
+                                color:['#f0f0f0'],
+                                type:'dashed'
+                            }
+
                         },
                         boundaryGap: false,
                         axisLabel:{
@@ -73,7 +84,11 @@ export default {
                         scale: true,
                         position:'right',
                         splitLine:{
-                            show:false
+                            show:true,
+                            lineStyle:{
+                                color:['#f0f0f0'],
+                                type:'dashed'
+                            }
                         },
                         axisLine:{
                             show: true
@@ -87,12 +102,12 @@ export default {
                                 return Math.ceil(value*10000)/10000
                             }
                         },
-                        max:function(value){
-                            return value.max+value.max*0.001;
-                        },
-                        min:function(value){
-                            return value.min-value.max*0.001;
-                        }
+                        // max:function(value){
+                        //     return value.max+value.max*0.001;
+                        // },
+                        // min:function(value){
+                        //     return value.min-value.max*0.001;
+                        // }
                     },
                     dataZoom: [
                         {
@@ -116,23 +131,22 @@ export default {
                             }
                         },
                         markPoint: {
-                            
                             data:[opt] 
                         },
-                        areaStyle:{
-                            normal:{
-                                color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
-                                    offset: 0,
-                                    color: 'rgba(48,140,234,6)'
-                                }, {
-                                    offset: 0.5,
-                                    color: 'rgba(48,140,234,.3)'
-                                }, {
-                                    offset: 1,
-                                    color: 'rgba(48,140,234,0)'
-                                }])
-                            }
-                        },
+                        // areaStyle:{
+                        //     normal:{
+                        //         color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+                        //             offset: 0,
+                        //             color: 'rgba(48,140,234,6)'
+                        //         }, {
+                        //             offset: 0.5,
+                        //             color: 'rgba(48,140,234,.3)'
+                        //         }, {
+                        //             offset: 1,
+                        //             color: 'rgba(48,140,234,0)'
+                        //         }])
+                        //     }
+                        // },
                         data:this.sdata.price,
 
                     }]

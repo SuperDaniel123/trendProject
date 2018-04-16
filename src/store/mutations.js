@@ -22,9 +22,9 @@ const mutations = {
     },
 
     //loading
-    [types.IS_LOADING](state,load){
-        state.isloading = load
-    }
+    // [types.IS_LOADING](state,load){
+    //     state.isloading = load
+    // }
 
 }
 

@@ -1,11 +1,12 @@
 <template>
   <div>
+      <loading v-if="loadFlag"></loading>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
           <li class="clearfix">当前盈亏<span v-text="property.wolBalance"></span></li>
           <li class="clearfix">预存款<span v-text="property.fBalance"></span></li>
-          <li class="clearfix">净值<span v-text="((+property.Balance * 100) + (+property.wolBalance * 100)) / 100"></span></li>
+          <li class="clearfix">净值<span v-text="(((+property.Balance * 100) + (+property.wolBalance * 100)) / 100).toFixed(2)"></span></li>
           <li class="clearfix">余额<span v-text="property.Balance"></span></li>
           <li class="clearfix">预存款比例<span v-text="scale"></span></li>
       </ul>
@@ -24,7 +25,7 @@
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
-                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']" v-text=" item.WOL || '-'"></h2>
+                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.PayType == 0? '':'-'}}{{item.WOL || '-'}}</h2>
               </div>
               <ul class="more">
                   <li class="clearfix">止盈<span v-text="item.TakeProfit"></span></li>
@@ -69,13 +70,19 @@
 import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
 import { setInterval, clearInterval } from 'timers';
+import loading from '../components/loading'
 export default {
     components:{
         iHeader,
+        loading
     },
     created(){
         this.holder()
         this.wsCurrPriceReal()
+        setTimeout(()=>{
+            this.loadFlag = false;
+        },800)
+        
     },
     mounted(){
         this.clock = setInterval(()=>{
@@ -87,9 +94,7 @@ export default {
         if(this.clock){
             clearInterval(this.clock)
         }
-        if(this.piceLine.length != 0){
-            this.wsCurr2.close();
-        }
+        this.wsCurr2.close();
         
     },
     computed:{
@@ -114,7 +119,9 @@ export default {
             TakeProfit:'',
             StopLoss:'',
             
-            askList:[]
+            askList:[],
+            //loading开关
+            loadFlag:true
         }
     },
     methods:{
@@ -215,9 +222,7 @@ export default {
             })
         },
         wsCurrPriceReal(){	//初始化端口连接-DONE
-            if(this.piceLine.length == 0){
-                return
-            }
+            
             this.wsCurr2 = new WebSocket('ws://price.fa513.cn:16888/');	//ws://mid.price.fcczq.com:16888
             this.wsCurr2.onmessage = (e)=>{            
                 let data = eval("("+e.data+")");
@@ -326,6 +331,7 @@ export default {
         background: @bgGray;
         display: flex;
         flex-wrap:wrap;
+        padding-bottom: 0.5rem;
         li{
             width:50%;
             box-sizing: border-box;
@@ -345,7 +351,7 @@ export default {
     }
     li.show{
         transition: all 0.2s;
-        height:12rem;
+        height:12.5rem;
     }
 
 }
