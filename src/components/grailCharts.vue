@@ -29,7 +29,7 @@ export default {
             upColor:'#ec0000',
             upBorderColor:'#ec0000',
             downColor:'#00da3c',
-            downBorderColor:'#008F28',
+            downBorderColor:'#00da3c',
 
         }
     },
@@ -64,7 +64,10 @@ export default {
                 values[i] = new Array();
                 for(let key in dar){
                     if(key != 'PriceDateTime'){
-                        values[i].push(+dar[key])
+                        values[i][0] = +dar['Open']
+                        values[i][1] = +dar['Close']
+                        values[i][2] = +dar['Low']
+                        values[i][3] = +dar['High']
                     }
                 }
             }
@@ -277,6 +280,7 @@ export default {
                 }
                 //获取原始数据
                 if(data.ResultCD == 200 && data.Code == this.code){
+                    console.log(data)
                     this.isArr = data
                     let arr = this.splitData(data);
                     this.data0 = arr;

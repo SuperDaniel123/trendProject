@@ -128,7 +128,7 @@ export default {
             this.$ajax('/trade/order','post',opt).then((res)=>{
                 let data = res.data;
                 if(data.ResultCD != 200){
-                    console.log(data.ErrorMsg)
+                    alert(data.ErrorMsg)
                     return
                 }
                 if(data.ResultCD == 200){
