@@ -15,7 +15,7 @@
           <div class="noneRecord" v-if="this.trecord =='' || this.trecord.length == 0">暂无记录</div>
           <ul class="otherTeams" v-if="!this.trecord || this.trecord.length != 0">
               <li :class="[item.state == false? 'noneStyle clearfix':'tStyle clearfix']" v-for="(item,index) in this.trecord" :key="index" @click="getShow(index)">
-                  {{item.FinalTime}}<span v-text="item.Name"></span>
+                  {{item.CloseTime}}<span v-text="item.Name"></span>
                   <div class="view">
                       <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
                       <p class="clearfix">止盈:<i v-text="item.TakeProfit"></i></p>
@@ -148,7 +148,14 @@ export default {
 
         //交易记录
         getTrecord(){
-            this.$ajax('/trade/history','post',{MID:this.setMID}).then(res=>{
+            let opt = {
+                MID:this.setMID,
+                Page:1,
+                Limit:4,
+                StartTime: '2017-01-01',
+                EndTime: '2018-12-30',
+            }
+            this.$ajax('/trade/history','post',opt).then(res=>{
                 if(res.status != 200){
                     return
                 }
@@ -172,8 +179,8 @@ export default {
         timer(){
             let elemt = this.trecord;
             for(let i = 0; i <elemt.length; i++){
-                let t = timestamp(+elemt[i].FinalTime);
-                elemt[i].FinalTime = t;
+                let t = timestamp(+elemt[i].CloseTime);
+                elemt[i].CloseTime = t;
             }
             this.trecord = elemt
         },

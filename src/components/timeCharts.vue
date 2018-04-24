@@ -40,9 +40,10 @@ export default {
                     coord: [this.sdata.time[this.sdata['time'].length - 1] ,  this.sdata.price[this.sdata.price.length - 1]],
                     value: this.sdata.price[this.sdata.price.length - 1],
                     symbol:'rect',
-                    symbolSize:[40,15],
-                    symbolOffset:[20,0],
+                    symbolSize:[56,15],
+                    symbolOffset:[28,0],
                     itemStyle:{
+                        
                         color:'#2197e9'
                     }
                 }
@@ -51,7 +52,7 @@ export default {
                     grid: {
                         top:'5%',
                         left: '1%',
-                        right: '0%',
+                        right: '1%',
                         bottom: '3%',
                         containLabel: true
                     },

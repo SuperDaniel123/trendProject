@@ -10,14 +10,14 @@
                     <p>( {{userDatum.LoginID}} )</p>
                 </div>
           </router-link>
-          <div class="btn">
+          <!-- <div class="btn">
               <router-link to="/recharge">
                   <input type="button" value="充值" />
               </router-link>
               <router-link to="/withdraw">
                 <input type="button" value="提现" />
               </router-link>
-          </div>
+          </div> -->
       </div>
       <div class="line"></div>
       <ul class="common-line">

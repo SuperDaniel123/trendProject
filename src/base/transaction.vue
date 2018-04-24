@@ -25,7 +25,7 @@
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
-                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.PayType == 0? '':'-'}}{{item.WOL || '-'}}</h2>
+                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
               </div>
               <ul class="more">
                   <li class="clearfix">止盈<span v-text="item.TakeProfit"></span></li>

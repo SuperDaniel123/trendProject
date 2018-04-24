@@ -49,4 +49,5 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
+.content{padding-bottom:3.5rem;}
 </style>

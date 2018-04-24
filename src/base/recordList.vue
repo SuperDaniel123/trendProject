@@ -15,7 +15,7 @@
           <!--交易记录-->
           <ul v-if="this.$route.query.type == 'history'" class="history">
             <li v-for="item in dataList" :key="item.index">
-              <h2>{{item.FinalTime}} <span v-text="item.Name"></span></h2>
+              <h2>{{item.CloseTime}} <span v-text="item.Name"></span></h2>
               <div class="text">
                   <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
                   <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
@@ -116,15 +116,16 @@ export default {
           break;
         }
         case 'history' :{
-          this.$ajax('/trade/history','post',{MID:this.setMID}).then(res=>{
+          this.$ajax('/trade/history','post',opt).then(res=>{
               let data = res.data.Data
+              console.log(data)
               if(res.status != 200){
                   console.log('error!')
                   return
               }
               for(let i = 0; i<data.length; i++){
                 let temp = data[i];
-                temp['FinalTime'] = timestamp(temp['FinalTime'])
+                temp['CloseTime'] = timestamp(temp['CloseTime'])
               }
               this.dataList = data
           })

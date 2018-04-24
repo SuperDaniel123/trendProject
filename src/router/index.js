@@ -1,29 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-// import root from '@/base/rootLayer'
-// import index from ''
-//预存记录
-// import recordList from '@/base/recordList'
-//添加产品
-// import proListChange from ''
-//提现
-// import recharge from '@/base/recharge'
-//充值
-// import withdraw from '@/base/withdraw'
-//银行卡列表
-// import bankCard from '@/base/bankCard'
-//添加银行卡
-// import addCard from '@/base/addCard'
-//修改密码
-// import password from '@/base/changePassword'
-//实名认证
-// import autonym from '@/base/autonym'
-//个人信息
-// import personal from '@/base/personal'
-//股票详情
-// import quotation from '@/base/quotation'
-//login
-// import login from '@/base/login'
 
 //密码测试
 import enter from '@/components/enterPassword'
