@@ -12,16 +12,28 @@
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
           </scroller>
+
+          <!--提现记录-->
+          <scroller v-if="this.$route.query.type == 'withdrawal'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
+            <div class="recordAll">
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.AddTime}}<span>存入:{{i.OrderAmount}}元</span></div>
+              <p v-if="!loadIf">没有更多了</p>
+              <load-more v-if="loadIf" tip="loading"></load-more>
+            </div>
+          </scroller>
+
           <!--交易记录-->
           <ul v-if="this.$route.query.type == 'history'" class="history">
             <li v-for="item in dataList" :key="item.index">
               <h2>{{item.CloseTime}} <span v-text="item.Name"></span></h2>
               <div class="text">
+                  <p class="clearfix">买入价:<i v-text="item.CurrentPrice"></i></p>
+                  <p class="clearfix">卖出价:<i v-text="item.ClosePrice"></i></p>
                   <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
                   <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
-                  <p class="clearfix">库存费:<i v-text="item.OrderDeposit"></i></p>
+                  <p class="clearfix">库存费:<i v-text="item.AcrossFee"></i></p>
                   <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                  <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
+                  <p class="clearfix">买入:<i>{{item.Quantity}}手</i></p>
                   <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
               </div>
 
@@ -57,6 +69,9 @@ export default {
           }
           case 'history' :{
             return '交易记录'
+          }
+          case 'withdrawal' :{
+            return '提现记录'
           }
         }
       }
@@ -115,10 +130,32 @@ export default {
           })
           break;
         }
+
+        case 'withdrawal':{
+          this.$ajax('/withdrawal/list','post',opt).then(res=>{
+            if(res.status != 200){
+                console.log('error!')
+                return
+            }
+            if(res.data.Data.length == 0 || !res.data.Data){
+              this.loadIf = false;
+              return;
+            }
+            let arr = this.dataList.concat(res.data.Data)
+            for(let i = 0; i <arr.length ; i++){
+                let temp = arr[i]
+                temp['AddTime'] = timestamp(temp['AddTime'])
+            }
+            this.dataList = arr
+          })
+          break;
+        }
+
+
+
         case 'history' :{
           this.$ajax('/trade/history','post',opt).then(res=>{
               let data = res.data.Data
-              console.log(data)
               if(res.status != 200){
                   console.log('error!')
                   return
@@ -181,9 +218,14 @@ export default {
       flex-wrap:wrap;
       p{
         width:50%;
+        padding:0 0.5rem;
+        box-sizing: border-box;
         font-size:@font1;
         color:@font-Sgray;
         line-height: 1.8rem;
+        i{
+          float: right;
+        }
       }
     }
   }

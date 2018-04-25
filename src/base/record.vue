@@ -17,12 +17,14 @@
               <li :class="[item.state == false? 'noneStyle clearfix':'tStyle clearfix']" v-for="(item,index) in this.trecord" :key="index" @click="getShow(index)">
                   {{item.CloseTime}}<span v-text="item.Name"></span>
                   <div class="view">
-                      <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
-                      <p class="clearfix">止盈:<i v-text="item.TakeProfit"></i></p>
-                      <p class="clearfix">库存费:<i v-text="0"></i></p>
-                      <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                      <p class="clearfix">买入:<i v-text="item.Quantity"></i>手</p>
-                      <p class="clearfix">获利:<i v-text="item.ProfitOrLoss"></i></p>
+                        <p class="clearfix">买入价:<i v-text="item.CurrentPrice"></i></p>
+                        <p class="clearfix">卖出价:<i v-text="item.ClosePrice"></i></p>
+                        <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
+                        <p class="clearfix">止盈:<i v-text="item.TakeProfit"></i></p>
+                        <p class="clearfix">库存费:<i v-text="0"></i></p>
+                        <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
+                        <p class="clearfix">买入:<i>{{item.Quantity}}手</i></p>
+                        <p class="clearfix">获利:<i v-text="item.ProfitOrLoss"></i></p>
                   </div>
               </li>
               <div class="more clearfix">
@@ -46,7 +48,7 @@
           <div class="noneRecord" v-if="this.withdraw =='' || this.withdraw.length == 0">暂无记录</div>
           <!--暂无数据测试-->
           <ul class="otherTeams" v-if="!this.withdraw || this.withdraw.length != 0">
-              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index"><span></span></li>
+              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index">{{item.AddTime}}<span>取出{{item.OrderAmount}}元</span></li>
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'withdrawal'}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
@@ -141,8 +143,13 @@ export default {
                     console.log('error!')
                     return
                 }
-                //先绑定，暂无数据
-                this.withdraw = res.data.Data
+                let arr = res.data.Data
+                for(let i = 0; i <arr.length ; i++){
+                    let temp = arr[i]
+                    temp['AddTime'] = timestamp(temp['AddTime'])
+                }
+
+                this.withdraw = arr
             })
         },
 
@@ -254,7 +261,7 @@ export default {
         .view{
             position: absolute;
             left: 0;
-            line-height:3rem;
+            line-height:2.25rem;
             width:100%;
             background: @bgGray;
             display: flex;

@@ -12,26 +12,26 @@
       </ul>
       <div class="line"></div>
       <ul class="piceLine">
-          <li v-for="(item,index) in this.piceLine" :key="index" :class="[item.state == false? '':'show']" >
+          <li v-for="(item,index) in this.piceLine" :key="index" :class="[showList[index] == false? '':'show']" >
               <div class="basic" @click="getShow(index)">
                     <div class="title">
                         <h3 v-text="item.Name"></h3>
-                        <span>买入: {{item.Quantity}}</span>
+                        <span>{{item.PayType == 0?'买入':'卖出'}}:{{item.Quantity}}</span>
                     </div>
                     <p :class="[item.PayType == '0'? 'red':'blue']">
                         <span>{{item.CurrentPrice}}</span>
                         <i class="fa fa-angle-right" style=" color:#999;"></i>
-                        <span v-text="currentPice(item.Code)"></span>
+                        <span v-text="currentPice(item.Code,item.PayType)"></span>
                         <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
                         <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
                     </p>
                     <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
               </div>
               <ul class="more">
-                  <li class="clearfix">止盈<span v-text="item.TakeProfit"></span></li>
-                  <li class="clearfix">止损<span v-text="item.StopLoss"></span></li>
-                  <li class="clearfix">库存量<span>0</span></li>
-                  <li class="clearfix">手续费<span v-text="item.OrderFee"></span></li>
+                  <li class="clearfix">止盈:<span v-text="item.TakeProfit"></span></li>
+                  <li class="clearfix">止损:<span v-text="item.StopLoss"></span></li>
+                  <li class="clearfix">库存费:<span v-text="item.AcrossFee"></span></li>
+                  <li class="clearfix">手续费:<span v-text="item.OrderFee"></span></li>
                   <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
                   <li class="clearfix"><button @click="flag = true">修改止盈止损</button></li>
               </ul>
@@ -39,7 +39,7 @@
                   <div class="inbox">
                       <h2>{{item.Name}}<span>订单号：{{item.OrderSN}}</span></h2>
                       <ul class="editList">
-                          <li>买入<span v-text="item.CurrentPrice"></span></li>
+                          <li>{{item.PayType == 0?'买入':'卖出'}}<span v-text="item.CurrentPrice"></span></li>
                           <li>止盈<span v-text="item.TakeProfit"></span></li>
                           <li>止损<span v-text="item.StopLoss"></span></li>
                           <li>当前盈亏<span v-text="item.WOL"></span></li>
@@ -71,7 +71,7 @@ import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
 import { setInterval, clearInterval } from 'timers';
 import loading from '../components/loading'
-export default {
+export default { 
     components:{
         iHeader,
         loading
@@ -87,7 +87,7 @@ export default {
     mounted(){
         this.clock = setInterval(()=>{
             this.holder()
-        },3000)
+        },1000)
         
     },
     beforeDestroy(){
@@ -121,12 +121,22 @@ export default {
             
             askList:[],
             //loading开关
-            loadFlag:true
+            loadFlag:true,
+            //show队列
+            showList:[]
         }
     },
     methods:{
         getShow(id){
-            this.piceLine[id].state = !this.piceLine[id].state
+            if(this.showList[id] == true){
+                this.showList[id] = false;
+                return;
+            }
+            for(let i = 0; i <this.showList.length; i++){
+                this.showList[i] = false
+            }
+            this.showList[id] = true
+            
         },
         //个人资金
         userFund(){
@@ -154,24 +164,12 @@ export default {
                         this.askList.push(arr[i])
                     }
                 }
-                
-                // console.log(data)
-                if(this.piceLine.length == 0 ){
-                    for(let i = 0; i <data.Data.length ; i++){
-                        let temp = data.Data[i];
-                        temp['state'] = false;
-                    }
-                    this.piceLine = data.Data
-                }
-                else if(this.piceLine.length > 0){
-                    for(let i = 0; i <data.Data.length ; i++){
-                        let temp = data.Data[i];
-                        for (let key in temp){
-                            this.piceLine[i][key] = temp[key]
-                        }
+                this.piceLine = data.Data
+                if(this.showList.length == 0){
+                    for(let i = 0; i<this.piceLine.length;i++){
+                        this.showList.push(false)
                     }
                 }
-                
             })
             this.userFund()
         },
@@ -244,12 +242,23 @@ export default {
             };
       },
       //获取当前价
-      currentPice(code){
+      currentPice(code,PayType){
           let arr = this.askList
           for(let i = 0; i <arr.length; i++){
-              if(arr[i]['Code'] == code){
-                  return arr[i]['Ask']
+              switch(PayType){
+                  case 0 :{
+                        if(arr[i]['Code'] == code){
+                            return arr[i]['Ask']
+                        }
+                        break
+                    }
+                    case 1 :{
+                        if(arr[i]['Code'] == code){
+                            return arr[i]['Bid']
+                        }
+                    }
               }
+              
           }
       }
 
