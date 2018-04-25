@@ -33,36 +33,36 @@
                   <li class="clearfix">库存费:<span v-text="item.AcrossFee"></span></li>
                   <li class="clearfix">手续费:<span v-text="item.OrderFee"></span></li>
                   <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
-                  <li class="clearfix"><button @click="flag = true">修改止盈止损</button></li>
+                  <li class="clearfix"><button @click="flag = true" >修改止盈止损</button></li>
               </ul>
-              <div class="order_edit" v-if="flag">
-                  <div class="inbox">
-                      <h2>{{item.Name}}<span>订单号：{{item.OrderSN}}</span></h2>
-                      <ul class="editList">
-                          <li>{{item.PayType == 0?'买入':'卖出'}}<span v-text="item.CurrentPrice"></span></li>
-                          <li>止盈<span v-text="item.TakeProfit"></span></li>
-                          <li>止损<span v-text="item.StopLoss"></span></li>
-                          <li>当前盈亏<span v-text="item.WOL"></span></li>
-                      </ul>
-                      <ul class="amend">
-                          <li>
-                              修改止盈(填0为不限)：
-                              <input type="number" v-model="TakeProfit" placeholder="0" />
-                          </li>
-                          <li>
-                              修改止盈(填0为不限)：
-                              <input type="number" v-model="StopLoss" placeholder="0" />
-                          </li>
-                      </ul>
-                      <div class="buttonS">
-                            <button @click="flag = false">取消</button>
-                            <button @click="order_edit(item.OrderID)">完成</button>
-                      </div>
-
-                  </div>
-              </div>
           </li> 
       </ul>
+        <div class="order_edit" v-if="flag">
+            <div class="inbox">
+                <h2>{{amendMain.Name}}<span>订单号：{{amendMain.OrderSN}}</span></h2>
+                <ul class="editList">
+                    <li>{{amendMain.PayType == 0?'买入':'卖出'}}<span v-text="amendMain.CurrentPrice"></span></li>
+                    <li>止盈<span v-text="amendMain.TakeProfit"></span></li>
+                    <li>止损<span v-text="amendMain.StopLoss"></span></li>
+                    <li>当前盈亏<span v-text="amendMain.WOL"></span></li>
+                </ul>
+                <ul class="amend">
+                    <li>
+                        修改止盈(填0为不限)：
+                        <input type="number" v-model="TakeProfit" placeholder="0" />
+                    </li>
+                    <li>
+                        修改止盈(填0为不限)：
+                        <input type="number" v-model="StopLoss" placeholder="0" />
+                    </li>
+                </ul>
+                <div class="buttonS">
+                    <button @click="flag = false">取消</button>
+                    <button @click="order_edit(amendMain.OrderID)">完成</button>
+                </div>
+
+            </div>
+        </div>
   </div>
 </template>
 
@@ -98,12 +98,21 @@ export default {
         
     },
     computed:{
-      ...mapGetters(['setMID']),
-      scale(){
-          return (((((+this.property.Balance * 100) + (+this.property.wolBalance * 100)) / 100) / (+this.property.fBalance)) * 100).toFixed(3) + '%'
-      },
-      
-      
+        ...mapGetters(['setMID']),
+        scale(){
+            return (((((+this.property.Balance * 100) + (+this.property.wolBalance * 100)) / 100) / (+this.property.fBalance)) * 100).toFixed(3) + '%'
+        }, 
+    },
+    watch:{
+        'piceLine':{
+            handler(val,old){
+                if(!this.amendMain || !this.pid){
+                    return
+                }
+                this.amendMain = this.piceLine[this.pid] 
+            },  
+            deep:true
+        }
     },
     data(){
         return{
@@ -123,11 +132,17 @@ export default {
             //loading开关
             loadFlag:true,
             //show队列
-            showList:[]
+            showList:[],
+            //修改止盈止损
+            amendMain:'',
+            //当前点击id
+            pid:''
         }
     },
     methods:{
         getShow(id){
+            this.pid = id;
+            this.amendMain = this.piceLine[id]
             if(this.showList[id] == true){
                 this.showList[id] = false;
                 return;
@@ -214,8 +229,7 @@ export default {
                 }
                 alert('修改成功')
                 this.flag = false;
-                this.TakeProfit=''
-                this.StopLoss=''
+                this.TakeProfit = this.amendMain = this.StopLoss = ''
 
             })
         },

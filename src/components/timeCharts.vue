@@ -41,7 +41,7 @@ export default {
                     value: this.sdata.price[this.sdata.price.length - 1],
                     symbol:'rect',
                     symbolSize:[56,15],
-                    symbolOffset:[28,0],
+                    symbolOffset:[20,0],
                     itemStyle:{
                         
                         color:'#2197e9'
