@@ -2,9 +2,13 @@
 
 > A Vue.js project
 
-## Build Setup
+## Build Setup 
+
+
 
 ``` bash
+# vux-ui
+
 # install dependencies
 npm install
 

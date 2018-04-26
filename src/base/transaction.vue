@@ -156,11 +156,16 @@ export default {
         //个人资金
         userFund(){
             this.$ajax('/account/balance','post',{MID:this.setMID}).then(res=>{
+
                 if(res.status != 200){
                     console.log('error!')
                     return
                 }
-                this.property = res.data.Data
+                let data = res.data.Data
+                if(data){
+                    this.property = data
+                }
+                
             })
         },
 

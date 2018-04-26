@@ -7,7 +7,7 @@
           <!--充值记录-->
           <scroller v-if="this.$route.query.type == 'deposit'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
-              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}元</span></div>
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
@@ -16,7 +16,7 @@
           <!--提现记录-->
           <scroller v-if="this.$route.query.type == 'withdrawal'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
-              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.AddTime}}<span>存入:{{i.OrderAmount}}元</span></div>
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.AddTime}}<span>存入:{{i.OrderAmount}}</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>

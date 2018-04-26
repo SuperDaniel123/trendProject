@@ -36,7 +36,7 @@
           <h2>充值记录</h2>
           <div class="noneRecord" v-if="this.recharge =='' || this.recharge.length == 0">暂无记录</div>
           <ul class="otherTeams" v-if="!this.recharge || this.recharge.length != 0">
-              <li class="clearfix" v-for="(item,index) in this.recharge" :key="index">{{item.SignupTime}}<span>存入:{{item.OrderAmount}}元</span></li>
+              <li class="clearfix" v-for="(item,index) in this.recharge" :key="index">{{item.SignupTime}}<span>存入:{{item.OrderAmount}}</span></li>
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'deposit'}}" ><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
@@ -48,7 +48,7 @@
           <div class="noneRecord" v-if="this.withdraw =='' || this.withdraw.length == 0">暂无记录</div>
           <!--暂无数据测试-->
           <ul class="otherTeams" v-if="!this.withdraw || this.withdraw.length != 0">
-              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index">{{item.AddTime}}<span>取出{{item.OrderAmount}}元</span></li>
+              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index">{{item.AddTime}}<span>取出{{item.OrderAmount}}</span></li>
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'withdrawal'}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
