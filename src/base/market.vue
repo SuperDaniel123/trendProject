@@ -19,7 +19,7 @@
                   </li>
                   <li>
                       <h3 v-text="item.Bid|| '-'"></h3>
-                      <span>最低{{item.Min || '-'}}</span>
+                      <span>最低{{item.Min || '-'}}</span> 
                   </li>
               </ul>
           </li>

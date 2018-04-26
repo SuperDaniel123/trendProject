@@ -48,11 +48,11 @@
                 </ul>
                 <ul class="amend">
                     <li>
-                        修改止盈(填0为不限)：
+                        修改止盈/点位：
                         <input type="number" v-model="TakeProfit" placeholder="0" />
                     </li>
                     <li>
-                        修改止盈(填0为不限)：
+                        修改止损/点位：
                         <input type="number" v-model="StopLoss" placeholder="0" />
                     </li>
                 </ul>
@@ -109,7 +109,7 @@ export default {
                 if(!this.amendMain || !this.pid){
                     return
                 }
-                this.amendMain = this.piceLine[this.pid] 
+                this.amendMain = val[this.pid] 
             },  
             deep:true
         }

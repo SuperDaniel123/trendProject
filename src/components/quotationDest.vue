@@ -74,19 +74,19 @@ export default {
         },
 
         getStopLoss(o,id){
+            let float = o
+            let point = (float.split('.'))[1].length
             if(this.deal == 0){
                 if(o){
-                    let float = o
-                    let point = (float.split('.'))[1].length
                     switch(id){
                         case 'loss':{
                             let num = (Number(o) * (Math.pow(10,point)) - this.stopLoss)/Math.pow(10,point)
-                            return num
+                            return num.toFixed(point)
                             break
                         }
                         case 'gain' :{
                             let num = (Number(o) * (Math.pow(10,point)) + this.earnProfit)/Math.pow(10,point)
-                            return num
+                            return num.toFixed(point)
                             break
                         }
                     }
@@ -95,17 +95,15 @@ export default {
             }
             else if(this.deal == 1){
                 if(o){
-                    let float = o
-                    let point = (float.split('.'))[1].length
                     switch(id){
                         case 'loss':{
                             let num = (Number(o) * (Math.pow(10,point)) + this.stopLoss)/Math.pow(10,point)
-                            return num
+                            return num.toFixed(point)
                             break
                         }
                         case 'gain' :{
                             let num = (Number(o) * (Math.pow(10,point)) - this.earnProfit)/Math.pow(10,point)
-                            return num
+                            return num.toFixed(point)
                             break
                         }
                     }

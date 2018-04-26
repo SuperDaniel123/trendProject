@@ -25,11 +25,11 @@
              <input type="text" placeholder="请输入推荐人" v-model="referrer" />
              <input type="number"  placeholder="请输入手机" v-model="registerPhone" />
              <input type="text" placeholder="请输入姓名" v-model="IdName" />
-             <input type="text" placeholder="请输入密码" v-model="enrollPwd" />
-             <input type="text" placeholder="请输入确认密码" v-model="affirmPwd" />
+             <input type="password" placeholder="请输入密码" v-model="enrollPwd" />
+             <input type="password" placeholder="请输入确认密码" v-model="affirmPwd" />
              <div class="aCode">
                 <input type="number" placeholder="请输入验证码" v-model="authCode"/>
-                <button>获取验证码</button>
+                <button @click="getCode(registerPhone)">获取验证码</button>
              </div>
              <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
              <input type="button" @click="reg()" name="Submit" value="注册" />
@@ -83,7 +83,8 @@ export default {
             let opt = {
                 LoginID:this.userPhone,
                 LoginPwd:this.password,
-                LoginDev:this.facility,
+                LoginDev:this.facility, 
+
                 LoginIP:this.ip
             }
             this.$ajax('/login','post',opt).then(res=>{
@@ -141,14 +142,13 @@ export default {
             }
 
             this.$ajax('/sms/sendMsg','post',{LoginID:code,Token:this.token}).then(res=>{
-                if(res.data.ResultCD){
+                if(res.data.ResultCD != 200){
                     alert(res.data.ErrorMsg)
                     return
                 }
+                return;
             })
 
-
-            
         },
         forget_pwd(){
             let opt = {
@@ -158,6 +158,14 @@ export default {
                 Token:this.token,
                 Code:this.authCode
             }
+            if(!opt.NewPwd || !opt.ReNewPwd){
+                alert('密码或确认密码不能为空')
+                return;
+                if(opt.NewPwd != opt.ReNewPwd){
+                    alert('密码不一致')
+                    return
+                }
+            }
             this.$ajax('/forget_pwd','post',opt).then(res=>{
                 let data = res.data;
                 if(data.ResultCD =! 200){
@@ -166,10 +174,7 @@ export default {
                 }
                 alert('操作成功')
                 this.state = 0;
-                this.authCode = ''
-                this.forgetUser = ''
-                this.newPwd = ''
-                this.ReNewPwd = ''
+                this.authCode = this.forgetUser = this.newPwd = this.ReNewPwd = ''
             })
         },
         reg(){
@@ -179,21 +184,38 @@ export default {
                 ReLoginPwd:this.affirmPwd,
                 IDName:this.IdName,
                 Token:this.token,
-                aCode:this.referrer
+                aCode:this.referrer,
+                Code:this.authCode
+                
             }
-            this.$ajax('/reg','post',opt).then(res=>{
-                let data = res.data;
-                if(data.ResultCD =! 200){
-                    alert(data.ErrorMsg)
+            if(!opt.LoginID){
+                alert('请输入手机');
+                return;
+            }
+            if(!opt.IDName){
+                alert('请输入姓名')
+                return;
+            }
+            if(!opt.LoginPwd || !opt.ReLoginPwd){
+                alert('密码或确认密码不能为空')
+                return;
+                if(opt.LoginPwd != opt.ReLoginPwd){
+                    alert('密码不一致')
                     return
                 }
-                alert('注册成功')
-                this.state = 0;
-                this.registerPhone = ''
-                this.enrollPwd = ''
-                this.affirmPwd = ''
-                this.IdName = ''
-                this.referrer = ''
+            }
+
+
+            this.$ajax('/reg','post',opt).then(res=>{
+                let data = res.data;
+                if(data.ResultCD == 200){
+                    alert('注册成功')
+                    this.state = 0;
+                    this.registerPhone = this.enrollPwd = this.affirmPwd = this.IdName = this.referrer = this.authCode = ''
+                    return
+                }
+                alert(data.ErrorMsg)
+                
             })
         }
     }
