@@ -13,7 +13,7 @@
              <input type="number" placeholder="请输入手机" v-model="forgetUser"/>
              <div class="aCode">
                 <input type="number" placeholder="请输入验证码" v-model="authCode"/>
-                <button @click="getCode(forgetUser)">获取验证码</button>
+                <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(forgetUser)" v-model="sdCode" />
              </div>
              <input type="password" name="password" placeholder="请输入新密码" v-model="newPwd" />
              <input type="password" name="password" placeholder="请再次输入新密码" v-model="ReNewPwd" />
@@ -29,7 +29,7 @@
              <input type="password" placeholder="请输入确认密码" v-model="affirmPwd" />
              <div class="aCode">
                 <input type="number" placeholder="请输入验证码" v-model="authCode"/>
-                <button @click="getCode(registerPhone)">获取验证码</button>
+                <input type="button" :class="disabled == false? 'btnCode blue':'btnCode gray'" :disabled = disabled @click="getCode(registerPhone)" v-model="sdCode" />
              </div>
              <div class="otherOper clearfix"><span @click ="state = 0">登录</span></div>
              <input type="button" @click="reg()" name="Submit" value="注册" />
@@ -41,6 +41,7 @@
 
 <script>
 import {mapMutations} from 'vuex'
+import { setInterval, clearInterval } from 'timers';
 export default {
     name:'login',
     data(){
@@ -52,6 +53,11 @@ export default {
             ip:'127.0.0.1',
             //0 是登录，1是忘记密码, 2是注册
             state:0,
+            
+            //验证码按钮
+            sdCode:'获取验证码',
+            //禁用状态
+            disabled:false,
 
 
             //验证码
@@ -77,6 +83,7 @@ export default {
     methods:{
         ...mapMutations({
             setMID:'SET_MID',
+            setUID:'SET_UID',
             isLogin:'IS_LOGIN'
         }),
         getLogin(){
@@ -84,7 +91,6 @@ export default {
                 LoginID:this.userPhone,
                 LoginPwd:this.password,
                 LoginDev:this.facility, 
-
                 LoginIP:this.ip
             }
             this.$ajax('/login','post',opt).then(res=>{
@@ -118,9 +124,11 @@ export default {
 
                     default:{
                         sessionStorage.setItem('MID',data.Data.MID)
+                        sessionStorage.setItem('UID',data.Data.UID)
                         localStorage.setItem('userName',this.userPhone)
                         this.isLogin(true);
                         this.setMID(sessionStorage.getItem('MID'));
+                        this.setUID(sessionStorage.getItem('UID'));
                         this.$router.push({
                             path:'/'
                         })
@@ -135,6 +143,26 @@ export default {
                 this.token = data.Token
             })
         },
+
+        //计时器
+        countDown(){
+            var i = 60
+            let times = setInterval(()=>{
+                this.sdCode = --i + '秒重新获取'
+                console.log(i)
+                if(i<0){
+                    clearInterval(times)
+                    this.disabled = false;
+                    this.sdCode = '获取验证码'
+                }
+            },1000)
+            
+            
+
+            
+        },
+
+        //获取验证码
         getCode(code){
             if(code == '' && code.length != 11){
                 alert('请输入正确手机号')
@@ -146,6 +174,9 @@ export default {
                     alert(res.data.ErrorMsg)
                     return
                 }
+                alert('验证码已发送到手机上')
+                this.countDown()
+                this.disabled = true
                 return;
             })
 
@@ -278,16 +309,24 @@ export default {
 }
 .aCode{
     position: relative;
-    button{
-        padding:0 0.5rem;
+    input[type="button"].btnCode{
+        width:auto !important;
+        text-indent: 0 ;
+        padding:0 0.5rem !important;
         line-height: 2rem;
+        position: absolute ;
+        right:0.5rem ;
+        top:0.5rem 
+    }
+    input[type="button"].btnCode.blue{
+        border:1px solid @blue;
+        background: @blue;
+        color:@white;
+    }
+    input[type="button"].btnCode.gray{
         background: @white;
         color:#cacaca;
         border:1px solid #cacaca;
-        .border-radius;
-        position: absolute;
-        right:0.5rem;
-        top:0.5rem;
     }
 }
 

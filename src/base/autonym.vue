@@ -14,7 +14,7 @@
             </div>
             <p class="ctext" v-if="this.status">审核中..</p>
             <div class="boundbtn" v-if="!this.disabled">
-                <button>提交申请</button>
+                <button @click="certificate">提交申请</button>
             </div>
       </div>
   </div>
@@ -47,9 +47,9 @@ export default {
   mounted(){
   },
   computed:{
-      ...mapGetters(['setMID','userInfo']),
+      ...mapGetters(['setMID','setUID']),
       info(){
-          return this.userInfo
+          return this.setUID
       },
   },
   methods:{
@@ -58,14 +58,18 @@ export default {
           let opt ={
                 MID:this.setMID,
                 IDName:this.user,
-                UID:this.info.UID,
+                UID:this.info,
                 Gender:this.value[0],
                 IDCard:this.IDCARD
           }
-          console.log(opt)
+          if(!opt.IDName || !opt.IDCard){
+              alert('姓名或身份证不能为空')
+              return;
+          }
           this.$ajax('/account/certificate','post',opt).then(res=>{
-                if(res.status != 200){
-                    console.log('error!')
+              let data = res.data
+                if(data.ResultCD != 200){
+                    alert(data.ErrorMsg)
                     return
                 }
                 alert('提交成功')
@@ -76,12 +80,12 @@ export default {
     //实名认证进度
     certificate_progress(){
         this.$ajax('/account/certificate_progress','post',{MID:this.setMID}).then(res=>{
-            if(res.status != 200){
-                console.log('error!')
+            if(res.data.ResultCD != 200){
+                alert(res.data.ErrorMsg)
                 return
             }
             let data = res.data.Data;
-            
+            console.log(data)
             if(data['Status'] == '1' || !data['Status']){
                 this.disabled = false;
                 return

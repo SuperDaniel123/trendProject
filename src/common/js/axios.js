@@ -68,6 +68,7 @@ let api = function(url,type,options){
             .then(response => {
                 if(response.data.ResultCD == 'E999'){
                     sessionStorage.removeItem('MID')
+                    sessionStorage.removeItem('UID')
                     alert('登录超时')
                     location.reload()
                     return;

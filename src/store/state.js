@@ -1,6 +1,8 @@
 const state = {
     //MID
     MID:''||sessionStorage.getItem('MID'),
+    //uid
+    UID:''||sessionStorage.getItem('UID'),
     //登录状态
     isLogin:false,
     //首页状态

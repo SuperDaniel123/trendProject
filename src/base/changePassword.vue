@@ -43,7 +43,7 @@ export default {
   },
   methods:{
     getAffirm(){
-        let opt;
+        let opt,url;
         if(!this.oldcode || !this.newcode || !this.affirm){
             this.$vux.alert.show({
                 content: '密码不能为空',

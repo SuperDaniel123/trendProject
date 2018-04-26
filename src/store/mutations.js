@@ -24,6 +24,9 @@ const mutations = {
     //loading
     [types.IS_LOADING](state,load){
         state.isloading = load
+    },
+    [types.SET_UID](state,setUid){
+        state.UID = setUid
     }
 
 }

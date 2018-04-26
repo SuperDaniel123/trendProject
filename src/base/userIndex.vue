@@ -3,13 +3,13 @@
       <loading v-if="loadFlag"></loading>
       <i-header :headline="headline"></i-header>
       <div class="userBox">
-          <router-link to="/personal">
+          <!-- <router-link to="/personal"> -->
                 <img class="headPortrait" src="../common/images/portrait.png" />
                 <div class="nick">
                     <h2>昵称: <span v-text="userDatum.IDName"></span></h2>
                     <p>( {{userDatum.LoginID}} )</p>
                 </div>
-          </router-link>
+          <!-- </router-link> -->
           <!-- <div class="btn">
               <router-link to="/recharge">
                   <input type="button" value="充值" />
@@ -91,6 +91,7 @@ export default {
         },
         logOut(){
             sessionStorage.removeItem('MID')
+            sessionStorage.removeItem('UID')
             this.mid('')
             this.isLogin(false)
             alert('退出成功')

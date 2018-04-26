@@ -7,6 +7,8 @@ export const indexStateS = state => state.indexState
 //个人信息
 export const userInfo = state => state.user
 
+//UID
+export const setUID = state => state.UID
 //loading
 // export const isLoading = state => state.isloading
 // //列表
