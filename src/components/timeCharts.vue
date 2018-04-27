@@ -52,7 +52,7 @@ export default {
                     grid: {
                         top:'5%',
                         left: '1%',
-                        right: '1%',
+                        right: '2.5%',
                         bottom: '3%',
                         containLabel: true
                     },
@@ -124,6 +124,7 @@ export default {
                         name:'价格',
                         type:'line',
                         symbol: false,
+                        
                         showSymbol: false,
                         lineStyle:{
                             normal:{

@@ -4,6 +4,7 @@
       <div class="content">
           <ul class="commonList">
               <li><span>原密码：</span><input type="password" placeholder="请输入原密码" v-model="oldcode" /></li>
+              <p v-if="headline == '修改支付密码'" class="tip">(初始密码:123456)</p>
               <li><span>新密码：</span><input type="password" placeholder="请输入新密码" v-model="newcode"/></li>
               <li><span>确认密码：</span><input type="password" placeholder="请在输入一遍新密码" v-model="affirm" /></li>
           </ul>
@@ -70,18 +71,18 @@ export default {
             url = this.$route.params.id == 1? '/account/pwd':'/account/pay_pwd'
             this.$ajax(url,'post',opt).then(res=>{
                 let data = res.data;
-                if(data.ResultCD == '4521'){
+                if(data.ResultCD != '200'){
                     alert(data.ErrorMsg)
+                    return
                 }
-                if(data.ResultCD == '200'){
-                    this.$vux.alert.show({
-                        content:'修改成功'
-                    })
-                    setTimeout(()=>{
-                        this.$router.push('/')
-                    },1000)
-                    
-                }
+
+                this.$vux.alert.show({
+                    content:'修改成功'
+                })
+                setTimeout(()=>{
+                    this.$router.push('/')
+                },1000)
+
             })
         }
     }
@@ -91,7 +92,11 @@ export default {
 
 <style lang="less" scoped>
 @import '../common/css/common.less';
-
+.tip{
+    margin-top:0.5rem;
+    text-indent: 1rem;
+    color:#ccc;
+}
 
 </style>
 

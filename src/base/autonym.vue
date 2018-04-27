@@ -55,11 +55,15 @@ export default {
   methods:{
       //实名认证
       certificate(){
+          let gen = ()=>{
+              return this.value[0] == '男'? 0 : 1
+          }
+          console.log(gen)
           let opt ={
                 MID:this.setMID,
                 IDName:this.user,
                 UID:this.info,
-                Gender:this.value[0],
+                Gender:gen(),
                 IDCard:this.IDCARD
           }
           if(!opt.IDName || !opt.IDCard){

@@ -325,7 +325,7 @@ export default {
     }
     input[type="button"].btnCode.gray{
         background: @white;
-        color:#cacaca;
+        color:#666666;
         border:1px solid #cacaca;
     }
 }
