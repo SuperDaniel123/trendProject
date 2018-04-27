@@ -11,6 +11,7 @@
           <li class="clearfix">预存款比例<span v-text="scale"></span></li>
       </ul>
       <div class="line"></div>
+      <div v-if="this.piceLine.length == 0" class="notMore">暂无数据</div>
       <ul class="piceLine">
           <li v-for="(item,index) in this.piceLine" :key="index" :class="[showList[index] == false? '':'show']" >
               <div class="basic" @click="getShow(index)">
@@ -18,14 +19,14 @@
                         <h3 v-text="item.Name"></h3>
                         <span>{{item.PayType == 0?'买入':'卖出'}}:{{item.Quantity}}</span>
                     </div>
-                    <p :class="[item.PayType == '0'? 'red':'blue']">
+                    <p :class="[+item.ProfitOrLoss > 0? 'red':'blue']">
                         <span>{{item.CurrentPrice}}</span>
                         <i class="fa fa-angle-right" style=" color:#999;"></i>
                         <span v-text="currentPice(item.Code,item.PayType)"></span>
-                        <i v-if="item.PayType == '0'" class="fa fa-caret-up"></i>               
-                        <i v-if="item.PayType == '1'" class="fa fa-caret-down"></i>     
+                        <i v-if="iCon(item.ProfitOrLoss)" class="fa fa-caret-up"></i>               
+                        <i v-if="!iCon(item.ProfitOrLoss)" class="fa fa-caret-down"></i>     
                     </p>
-                    <h2 :class="[item.PayType == '0'? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
+                    <h2 :class="[+item.ProfitOrLoss > 0? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
               </div>
               <ul class="more">
                   <li class="clearfix">止盈:<span v-text="item.TakeProfit"></span></li>
@@ -88,7 +89,6 @@ export default {
         this.clock = setInterval(()=>{
             this.holder()
         },1000)
-        
     },
     beforeDestroy(){
         if(this.clock){
@@ -100,7 +100,7 @@ export default {
     computed:{
         ...mapGetters(['setMID']),
         scale(){
-            return (((((+this.property.Balance * 100) + (+this.property.wolBalance * 100)) / 100) / (+this.property.fBalance)) * 100).toFixed(3) + '%'
+            return +this.property.fBalance == 0? 0:(((((+this.property.Balance * 100) + (+this.property.wolBalance * 100)) / 100) / (+this.property.fBalance)) * 100).toFixed(3) + '%'
         }, 
     },
     watch:{
@@ -140,6 +140,10 @@ export default {
         }
     },
     methods:{
+        //涨跌小箭头
+        iCon(hnl){
+            return +hnl > 0? true:false
+        },
         getShow(id){
             this.pid = id;
             this.amendMain = this.piceLine[id]
@@ -156,7 +160,6 @@ export default {
         //个人资金
         userFund(){
             this.$ajax('/account/balance','post',{MID:this.setMID}).then(res=>{
-
                 if(res.status != 200){
                     console.log('error!')
                     return
@@ -177,7 +180,6 @@ export default {
                     console.log(data.ErrorMsg)
                     return
                 }
-                
                 if(this.askList.length == 0){
                     let arr = data.Data;
                     for(let i = 0; i < arr.length; i++){
@@ -441,5 +443,10 @@ export default {
             }
         }
     }
+}
+.notMore{
+    line-height: 3rem;
+    text-align: center;
+    background: white;
 }
 </style>

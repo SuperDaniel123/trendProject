@@ -33,7 +33,7 @@
                   <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
                   <p class="clearfix">库存费:<i v-text="item.AcrossFee"></i></p>
                   <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                  <p class="clearfix">买入:<i>{{item.Quantity}}手</i></p>
+                  <p class="clearfix">{{item.PayType == 0?'买入':'卖出'}}:<i>{{item.Quantity}}手</i></p>
                   <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
               </div>
 

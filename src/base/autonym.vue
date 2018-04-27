@@ -44,7 +44,7 @@ export default {
   created(){
       this.certificate_progress()
   },
-  mounted(){
+  mounted(){ 
   },
   computed:{
       ...mapGetters(['setMID','setUID']),
