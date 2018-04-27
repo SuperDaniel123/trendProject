@@ -1,22 +1,22 @@
 <template>
   <div class="recordList">
     <back-header :headline="headline"></back-header>
-    <div class="content">
+    <div  style="padding-top:44px;box-sizing: border-box;height:100%;background: @bgGray;">
         <div class="line"></div>
 
           <!--充值记录-->
-          <scroller v-if="this.$route.query.type == 'deposit'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
+          <scroller v-if="this.$route.query.type == 'deposit'" lock-x :height="heightStte" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
-              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<span>存入:{{i.OrderAmount}}</span></div>
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.SignupTime}}<i>{{i.Status == 20? '成功':'未付款'}}</i><span>存入:{{i.OrderAmount}}</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
           </scroller>
 
           <!--提现记录-->
-          <scroller v-if="this.$route.query.type == 'withdrawal'" lock-x height="500px" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
+          <scroller v-if="this.$route.query.type == 'withdrawal'" lock-x :height="this.heightStte" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
             <div class="recordAll">
-              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.AddTime}}<span>存入:{{i.OrderAmount}}</span></div>
+              <div class="clearfix" v-for="i in dataList" :key="i.index"> {{i.AddTime}}<i>{{Wstate(i.Status)}}</i><span>取出:{{i.OrderAmount}}</span></div>
               <p v-if="!loadIf">没有更多了</p>
               <load-more v-if="loadIf" tip="loading"></load-more>
             </div>
@@ -74,6 +74,9 @@ export default {
             return '提现记录'
           }
         }
+      },
+      heightStte(){
+        return window.screen.height - 44 - 20 + 'px'
       }
   },
   data () {
@@ -81,8 +84,7 @@ export default {
       dataList:[],
       page:1,
       loadIf:true,
-      onFetching:false
-      
+      onFetching:false,
     }
   },
   
@@ -102,6 +104,22 @@ export default {
           }, 2000)
         }
     },
+
+    //冒泡排序
+    bubble(data){
+      let arr = data
+      for(var j=0;j<arr&&arr.length-1;j++){
+          //两两比较，如果前一个比后一个大，则交换位置。
+          for(var i=0;i<arr.length-1-j;i++){
+              if(arr[i].CloseTime<arr[i+1].CloseTime){
+                  var temp = arr[i];
+                  arr[i] = arr[i+1];
+                  arr[i+1] = temp;
+              }
+          } 
+      }
+      return arr
+    },
     getRequest(type){
       let opt ={
           MID:this.setMID,
@@ -117,9 +135,12 @@ export default {
                 console.log('error!')
                 return
             }
-            if(res.data.Data.length == 0 || !res.data.Data){
+            if((res.data.Data&&res.data.Data.length == 0) || !res.data.Data){
               this.loadIf = false;
               return;
+            }
+            if(res.data.Data&&res.data.Data.length < 10){
+              this.loadIf = false;
             }
             let arr = this.dataList.concat(res.data.Data)
             for(let i = 0; i <arr.length ; i++){
@@ -137,9 +158,12 @@ export default {
                 console.log('error!')
                 return
             }
-            if(res.data.Data.length == 0 || !res.data.Data){
+            if((res.data.Data&&res.data.Data.length == 0) || !res.data.Data){
               this.loadIf = false;
               return;
+            }
+            if(res.data.Data&&res.data.Data.length < 10){
+              this.loadIf = false;
             }
             let arr = this.dataList.concat(res.data.Data)
             for(let i = 0; i <arr.length ; i++){
@@ -160,11 +184,12 @@ export default {
                   console.log('error!')
                   return
               }
-              for(let i = 0; i<data.length; i++){
-                let temp = data[i];
+              let arr = this.bubble(data)
+              for(let i = 0; i<arr.length; i++){
+                let temp = arr[i];
                 temp['CloseTime'] = timestamp(temp['CloseTime'])
               }
-              this.dataList = data
+              this.dataList = arr
           })
           
 
@@ -172,6 +197,32 @@ export default {
         }
       
       }
+    },
+    //提现状态
+    Wstate(id){
+        switch(id){
+            case 0:
+              return '待审核'
+              break;
+            case 10:
+              return '待转账'
+              break;
+            case 11:
+              return '审核失败'
+              break;
+            case 20:
+              return '转账中'
+              break;
+            case 30:
+              return '转帐成功'
+              break;
+            case 31:
+              return '转账失败'
+              break;
+            default:{
+                return '提现失败'
+            }
+        }
     }
   }
 }
@@ -192,6 +243,10 @@ export default {
     .bottomRim;
     span{
       float: right;
+    }
+    i{
+      float:right;
+      margin-left:2rem;
     }
   }
   p{

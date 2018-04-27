@@ -27,6 +27,7 @@
                         <p class="clearfix">获利:<i v-text="item.ProfitOrLoss"></i></p>
                   </div>
               </li>
+              
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'history'}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
@@ -36,7 +37,7 @@
           <h2>充值记录</h2>
           <div class="noneRecord" v-if="this.recharge =='' || this.recharge.length == 0">暂无记录</div>
           <ul class="otherTeams" v-if="!this.recharge || this.recharge.length != 0">
-              <li class="clearfix" v-for="(item,index) in this.recharge" :key="index">{{item.SignupTime}}<span>存入:{{item.OrderAmount}}</span></li>
+              <li class="clearfix" v-for="(item,index) in this.recharge" :key="index">{{item.SignupTime}}<i>{{item.Status == 20? '成功':'未付款'}}</i><span>存入:{{item.OrderAmount}}</span></li>
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'deposit'}}" ><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
@@ -48,7 +49,7 @@
           <div class="noneRecord" v-if="this.withdraw =='' || this.withdraw.length == 0">暂无记录</div>
           <!--暂无数据测试-->
           <ul class="otherTeams" v-if="!this.withdraw || this.withdraw.length != 0">
-              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index">{{item.AddTime}}<span>取出{{item.OrderAmount}}</span></li>
+              <li class="clearfix" v-for="(item,index) in this.withdraw" :key="index">{{item.AddTime}}<i>{{Wstate(item.Status)}}</i><span>取出{{item.OrderAmount}}</span></li>
               <div class="more clearfix">
                   <router-link :to="{path:'/recordList',query:{type:'withdrawal'}}"><span>查看更多<i class="fa fa-caret-down"></i></span></router-link>
               </div>
@@ -174,8 +175,8 @@ export default {
                 for(let i = 0; i < th; i++){
                     arr.push(res.data.Data[i])
                 }
-                this.trecord = arr
-                console.log(this.trecord)
+                
+                this.trecord = this.bubble(arr)
                 if(this.trecord.length == '0' || !this.trecord){
                     return;
                 }
@@ -196,6 +197,49 @@ export default {
         getShow(i){
             this.trecord[i].state = !this.trecord[i].state;
         },
+
+        //冒泡排序
+        bubble(data){
+            let arr = data
+            for(var j=0;j<arr&&arr.length-1;j++){
+                //两两比较，如果前一个比后一个大，则交换位置。
+                for(var i=0;i<arr.length-1-j;i++){
+                    if(arr[i].CloseTime<arr[i+1].CloseTime){
+                        var temp = arr[i];
+                        arr[i] = arr[i+1];
+                        arr[i+1] = temp;
+                    }
+                } 
+            }
+            return arr
+        },
+
+        //提现状态
+        Wstate(id){
+            switch(id){
+                case 0:
+                  return '待审核'
+                  break;
+                case 10:
+                  return '待转账'
+                  break;
+                case 11:
+                  return '审核失败'
+                  break;
+                case 20:
+                  return '转账中'
+                  break;
+                case 30:
+                  return '转帐成功'
+                  break;
+                case 31:
+                  return '转账失败'
+                  break;
+                default:{
+                    return '提现失败'
+                }
+            }
+        }
     }
 
 
@@ -244,6 +288,10 @@ export default {
             .bottomRim;
             span{
                 float: right;
+            }
+            i{
+                float: right;
+                margin-left:2rem;
             }
         }
         .more{
