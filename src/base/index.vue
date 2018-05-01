@@ -1,13 +1,13 @@
 <template>
   <div class="index">
       <div class="content">
-              <market v-if="this.indexStateS == 0"></market>
-          
-              <transaction v-if="this.indexStateS == 1"></transaction>
+            <market v-if="this.indexStateS == 0"></market>
+        
+            <transaction v-if="this.indexStateS == 1"></transaction>
 
-              <record v-if="this.indexStateS == 2"></record>
+            <record v-if="this.indexStateS == 2"></record>
 
-              <user-index v-if="this.indexStateS == 3"></user-index>
+            <user-index v-if="this.indexStateS == 3"></user-index>
       </div>
       <i-footer></i-footer>
   </div>
@@ -32,7 +32,7 @@ export default {
         transaction,
         record,
         userIndex,
-        pageHeight
+        pageHeight,
     },
     computed:{
         ...mapGetters([

@@ -1,5 +1,6 @@
 <template>
   <div class="opeBox">
+      <back-load v-if="this.skip"></back-load>
       <div class="Lot clearfix">
         <span>手数</span>
         <div class="priceTeams">
@@ -25,6 +26,7 @@
 <script>
 import {XNumber} from 'vux'
 import {mapGetters,mapMutations} from 'vuex'
+import backLoad from '@/components/backLoad'
 export default {
     components:{
         XNumber
@@ -40,6 +42,7 @@ export default {
             //获利
             earnProfit:0,
             //偏差
+            skip:false
             // deviation:""
         }
     },
@@ -52,6 +55,9 @@ export default {
                 // return +val
             }
         }
+    },
+    beforeDestroy(){
+        this.skip = false
     },
     methods:{
         ...mapMutations({
@@ -129,6 +135,7 @@ export default {
                     alert(data.ErrorMsg)
                     return
                 }
+                this.skip = true;
                 if(data.ResultCD == 200){
                     alert('下单成功')
                     this.indexState(1)

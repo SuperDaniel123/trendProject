@@ -23,22 +23,25 @@
           </scroller>
 
           <!--交易记录-->
-          <ul v-if="this.$route.query.type == 'history'" class="history">
-            <li v-for="item in dataList" :key="item.index">
-              <h2>{{item.CloseTime}} <span v-text="item.Name"></span></h2>
-              <div class="text">
-                  <p class="clearfix">买入价:<i v-text="item.CurrentPrice"></i></p>
-                  <p class="clearfix">卖出价:<i v-text="item.ClosePrice"></i></p>
-                  <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
-                  <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
-                  <p class="clearfix">库存费:<i v-text="item.AcrossFee"></i></p>
-                  <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                  <p class="clearfix">{{item.PayType == 0?'买入':'卖出'}}:<i>{{item.Quantity}}手</i></p>
-                  <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
-              </div>
-
-            </li>
-          </ul>
+          <scroller v-if="this.$route.query.type == 'history'" lock-x :height="this.heightStte" @on-scroll-bottom="onScrollBottom" ref="scrollerBottom" :scroll-bottom-offst="500" >
+            <ul class="history">
+              <li v-for="item in dataList" :key="item.index">
+                <h2>{{item.CloseTime}} <span v-text="item.Name"></span></h2>
+                <div class="text">
+                    <p class="clearfix">买入价:<i v-text="item.CurrentPrice"></i></p>
+                    <p class="clearfix">卖出价:<i v-text="item.ClosePrice"></i></p>
+                    <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
+                    <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
+                    <p class="clearfix">库存费:<i v-text="item.AcrossFee"></i></p>
+                    <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
+                    <p class="clearfix">{{item.PayType == 0?'买入':'卖出'}}:<i>{{item.Quantity}}手</i></p>
+                    <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
+                </div>
+              </li>
+              <p v-if="!loadIf">没有更多了</p>
+              <load-more v-if="loadIf" tip="loading"></load-more>
+            </ul>
+          </scroller>
         <div class="line"></div>
     </div>
   </div>
@@ -108,7 +111,7 @@ export default {
     //冒泡排序
     bubble(data){
       let arr = data
-      for(var j=0;j<arr&&arr.length-1;j++){
+      for(var j=0;j<arr.length-1;j++){
           //两两比较，如果前一个比后一个大，则交换位置。
           for(var i=0;i<arr.length-1-j;i++){
               if(arr[i].CloseTime<arr[i+1].CloseTime){
@@ -116,88 +119,89 @@ export default {
                   arr[i] = arr[i+1];
                   arr[i+1] = temp;
               }
+              
           } 
       }
       return arr
     },
+
+    //判断类型
     getRequest(type){
-      let opt ={
-          MID:this.setMID,
-          Page:this.page,
-          Limit:15,
-          StartTime: '2017-01-01',
-          EndTime: '2018-12-30',
-      }
       switch(type){
         case 'deposit':{
-          this.$ajax('/deposit/list','post',opt).then(res=>{
-            if(res.status != 200){
-                console.log('error!')
-                return
-            }
-            if((res.data.Data&&res.data.Data.length == 0) || !res.data.Data){
-              this.loadIf = false;
-              return;
-            }
-            if(res.data.Data&&res.data.Data.length < 10){
-              this.loadIf = false;
-            }
-            let arr = this.dataList.concat(res.data.Data)
-            for(let i = 0; i <arr.length ; i++){
-                let temp = arr[i]
-                temp['SignupTime'] = timestamp(temp['SignupTime'])
-            }
-            this.dataList = arr
-          })
+          this.getAllList('deposit')
           break;
         }
-
         case 'withdrawal':{
-          this.$ajax('/withdrawal/list','post',opt).then(res=>{
-            if(res.status != 200){
-                console.log('error!')
-                return
-            }
-            if((res.data.Data&&res.data.Data.length == 0) || !res.data.Data){
-              this.loadIf = false;
-              return;
-            }
-            if(res.data.Data&&res.data.Data.length < 10){
-              this.loadIf = false;
-            }
-            let arr = this.dataList.concat(res.data.Data)
-            for(let i = 0; i <arr.length ; i++){
-                let temp = arr[i]
-                temp['AddTime'] = timestamp(temp['AddTime'])
-            }
-            this.dataList = arr
-          })
+          this.getAllList('withdrawal')
           break;
         }
-
-
-
         case 'history' :{
-          this.$ajax('/trade/history','post',opt).then(res=>{
-              let data = res.data.Data
-              if(res.status != 200){
-                  console.log('error!')
-                  return
-              }
-              let arr = this.bubble(data)
-              for(let i = 0; i<arr.length; i++){
-                let temp = arr[i];
-                temp['CloseTime'] = timestamp(temp['CloseTime'])
-              }
-              this.dataList = arr
-          })
-          
-
-
+          this.getAllList('history')
         }
       
       }
     },
+
+
+    //获取数据封装
+    getAllList(genre){
+      let opt = {
+          MID:this.setMID,
+          Page:this.page,
+          Limit:genre == 'history'? 10:15,
+          StartTime: '2017-01-01',
+          EndTime: '2018-12-30',
+      }
+      let urls = (d) =>{
+        if(d == 'history'){
+          return '/trade/history'
+        }
+        if(d == 'withdrawal'){
+          return '/withdrawal/list'
+        }
+        if(d == 'deposit'){
+          return '/deposit/list'
+        }
+      }
+
+      this.$ajax(urls(genre),'post',opt).then(res=>{
+          let data = res.data.Data
+          if(res.status != 200){
+              console.log('error!')
+              return
+          }
+          if((res.data.Data&&res.data.Data.length == 0) || !res.data.Data){
+            this.loadIf = false;
+            return;
+          }
+          if(res.data.Data&&res.data.Data.length < 10){
+            this.loadIf = false;
+          }
+
+          if(genre == 'history'){
+            data = this.bubble(data)
+          }
+          let arr = this.dataList.concat(data)
+          for(let i = 0; i<arr.length; i++){
+            let temp = arr[i];
+            if(genre == 'history'){
+              temp['CloseTime'] = timestamp(temp['CloseTime'])
+            }
+            if(genre == 'withdrawal'){
+               temp['AddTime'] = timestamp(temp['AddTime'])
+            }
+            if(genre == 'deposit'){
+              temp['SignupTime'] = timestamp(temp['SignupTime'])
+            }
+            
+          }
+          this.dataList = arr
+      })
+
+    },
+
+
     //提现状态
     Wstate(id){
         switch(id){
@@ -249,11 +253,12 @@ export default {
       margin-left:2rem;
     }
   }
-  p{
-    width:100%;
-    text-align: center;
-    line-height: 4rem;
-  }
+
+}
+.history p,.recordAll p{
+  width:100%;
+  text-align: center;
+  line-height: 4rem;
 }
 
 .history{

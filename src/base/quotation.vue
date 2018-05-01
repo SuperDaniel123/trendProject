@@ -1,5 +1,6 @@
 <template>
   <div class="recordList">
+    
     <transition name="fade">
       <div class="bgshow" v-show="flag" @click="flag = false"></div>
     </transition>
@@ -44,6 +45,7 @@ import quotationDest from '@/components/quotationDest'
 import { Checker, CheckerItem} from 'vux'
 import geailCharts from '@/components/grailCharts'
 import timeCharts from '@/components/timeCharts'
+
 export default {
   name: 'recordList',
   components:{
@@ -95,6 +97,7 @@ export default {
       //现价
       realPrice:'',
       flag:false
+      
     }
   },
   

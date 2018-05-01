@@ -1,6 +1,7 @@
 <template>
   <div>
       <loading v-if="loadFlag"></loading>
+      <back-load v-if="skip"></back-load>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="property" v-cloak>
@@ -72,10 +73,12 @@ import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
 import { setInterval, clearInterval } from 'timers';
 import loading from '../components/loading'
+import backLoad from '@/components/backLoad'
 export default { 
     components:{
         iHeader,
-        loading
+        loading,
+        backLoad
     },
     created(){
         this.holder()
@@ -136,7 +139,9 @@ export default {
             //修改止盈止损
             amendMain:'',
             //当前点击id
-            pid:''
+            pid:'',
+            //平仓开关
+            skip:false
         }
     },
     methods:{
@@ -190,6 +195,7 @@ export default {
                 if(this.showList.length == 0){
                     for(let i = 0; i<this.piceLine.length;i++){
                         this.showList.push(false)
+                        this.showList[0] = true;
                     }
                 }
             })
@@ -198,6 +204,7 @@ export default {
         closeOut(id){
             let c = confirm("是否平仓?")
             if(c){
+                this.skip = true;
                 let opt = {
                     MID:this.setMID,
                     OrderID:id
@@ -209,6 +216,7 @@ export default {
                         return
                     }
                     alert('成功');
+                    this.skip = false
                     for(let i = 0; i<this.piceLine.length; i++){
                         let temp = this.piceLine[i]
                         for(let key in temp){

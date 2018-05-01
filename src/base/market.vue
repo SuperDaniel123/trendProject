@@ -1,6 +1,7 @@
 <template>
   <div class="market">
       <loading v-if="loadFlag"></loading>
+      <back-load v-if="skip"></back-load>
       <div class="line"></div>
       <i-header :headline="headline"></i-header>
       <ul class="marketList">
@@ -36,11 +37,13 @@
 import iHeader from '@/components/i-header'
 import {mapGetters} from 'vuex'
 import { setTimeout } from 'timers'; 
-import loading from '../components/loading'
+import loading from '@/components/loading'
+import backLoad from '@/components/backLoad'
 export default {
     components:{
         iHeader,
-        loading
+        loading,
+        backLoad
     },
     created(){
         setTimeout(()=>{
@@ -53,6 +56,7 @@ export default {
     },
     beforeDestroy(){
         this.wsCurrPrice.close();
+        this.skip = false
     },
     data(){
         return{
@@ -62,7 +66,9 @@ export default {
             mkChange:[], 
             wsCurrPrice:'',
             //loading开关
-            loadFlag:true
+            loadFlag:true,
+            //跳转开关
+            skip:false
         }
     },
     methods:{
@@ -137,6 +143,7 @@ export default {
                     id = entity['ItemID']
                 }
             }
+            this.skip = true;
             this.$router.push({
                 path:'/quotation',
                 query: {

@@ -47,6 +47,7 @@ export default {
                         color:'#2197e9'
                     }
                 }
+
             this.charts.setOption(
                 {
                     grid: {
