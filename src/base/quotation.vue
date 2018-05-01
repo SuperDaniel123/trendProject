@@ -8,16 +8,15 @@
     <div class="content" style="padding-bottom:0;">
       <div class="line"></div>
       <!--线图占位-->
-      <div id="echarts">
+      <div id="echarts" :style="'height:'+ heightD">
         <time-charts v-if="this.eNode.key === '0'" ></time-charts>
         <geail-charts v-if="this.eNode.key !== '0'" :eindex ="this.eNode"></geail-charts>
       </div>
-      <div class="timeTab">
+      <div class="timeTab" >
         <checker type="radio" :radio-required="true" v-model="eNode" default-item-class="check-item" selected-item-class="check-item-selected">
           <checker-item :value="item" v-for="(item, index) in timeFrame" :key="index" @on-item-click="chartsNode">{{item.value}}</checker-item>
         </checker>
       </div>
-      <div class="line"></div>
 
       <div class="buyTeams">
         <div class="buttonTeams">
@@ -42,7 +41,7 @@
 <script>
 import backHeader from '@/components/back-header'
 import quotationDest from '@/components/quotationDest'
-import { Checker, CheckerItem} from 'vux'
+import {Checker, CheckerItem} from 'vux'
 import geailCharts from '@/components/grailCharts'
 import timeCharts from '@/components/timeCharts'
 
@@ -60,6 +59,9 @@ export default {
     headline(){
       return this.codeName(this.$route.query.details) +' ' +  this.$route.query.details
     },
+    heightD(){
+      return window.screen.height - 140 +'px'
+    }
   },
   created(){
     this.wsCurrPriceReal()
@@ -213,7 +215,6 @@ export default {
 }
 #echarts{
   width:100%;
-  height:42rem;
   background: @white;
 }
 .line{
@@ -227,7 +228,7 @@ export default {
     text-align: center;
     .check-item {
       border-radius: 2rem;
-      margin:0 0.8rem;
+      margin:0 0.5rem;
       width:4rem;
       border: 1px solid @bgGray;
       line-height: 2rem;

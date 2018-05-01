@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <div id="main" style="max-width: 100%;height:42rem"></div>
+    <div id="main" :style="'max-width: 100%;height:'+ heightD"></div>
   </div>
 </template>
 
@@ -50,6 +50,9 @@ export default {
         code(){
             return this.$route.query.details
         },
+        heightD(){
+            return window.screen.height - 140 +'px'
+        }
     },
     beforeDestroy(){
         this.theLine.close();

@@ -8,7 +8,7 @@
           <li v-for="(item,index) in this.mkChange" :key='index' :class="[item.return_UpDown == 1? 'rise':'fall']" @click="getPush(item.Code,item.Ask)" >
               <div class="title">
                   <h2 v-text="codeName(item.Code)"></h2>
-                  <span>幅度:{{item.DiffRatio + '%'|| '-'}}</span>
+                  <span>幅度:{{item.DiffRatio || '-'}} %</span>
                   <i v-if="item.return_UpDown == 1" class="fa fa-caret-up"></i>               
                   <i v-if="item.return_UpDown == 2" class="fa fa-caret-down"></i>         
               </div>

@@ -1,12 +1,13 @@
 <template>
   <div class="timeCharts">
-    <div id="main" style="max-width: 100%;height:42rem"></div>
+    <div id="main" :style="'max-width: 100%;height:'+ heightD"></div>
     <!-- <div v-text="price"></div> -->
   </div>
 </template>
 
 <script>
 import echarts from 'echarts'
+import recordVue from '../base/record.vue';
 export default {
     components:{
         echarts
@@ -24,6 +25,9 @@ export default {
         code(){
             return this.$route.query.details
         },
+        heightD(){
+            return window.screen.height - 140 +'px'
+        }
 
     },
     created(){
