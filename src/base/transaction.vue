@@ -1,44 +1,44 @@
 <template>
   <div>
-      <loading v-if="loadFlag"></loading>
-      <back-load v-if="skip"></back-load>
-      <div class="line"></div>
-      <i-header :headline="headline"></i-header>
-      <ul class="property" v-cloak>
-          <li class="clearfix">当前盈亏<span v-text="property.wolBalance"></span></li>
-          <li class="clearfix">预存款<span v-text="property.fBalance"></span></li>
-          <li class="clearfix">净值<span v-text="(((+property.Balance * 100) + (+property.wolBalance * 100)) / 100).toFixed(2)"></span></li>
-          <li class="clearfix">余额<span v-text="property.Balance"></span></li>
-          <li class="clearfix">预存款比例<span v-text="scale"></span></li>
-      </ul>
-      <div class="line"></div>
-      <div v-if="this.piceLine.length == 0" class="notMore">暂无数据</div>
-      <ul class="piceLine">
-          <li v-for="(item,index) in this.piceLine" :key="index" :class="[showList[index] == false? '':'show']" >
-              <div class="basic" @click="getShow(index)">
-                    <div class="title">
-                        <h3 v-text="item.Name"></h3>
-                        <span>{{item.PayType == 0?'买入':'卖出'}}:{{item.Quantity}}</span>
-                    </div>
-                    <p :class="[+item.ProfitOrLoss > 0? 'red':'blue']">
-                        <span>{{item.CurrentPrice}}</span>
-                        <i class="fa fa-angle-right" style=" color:#999;"></i>
-                        <span v-text="currentPice(item.Code,item.PayType)"></span>
-                        <i v-if="iCon(item.ProfitOrLoss)" class="fa fa-caret-up"></i>               
-                        <i v-if="!iCon(item.ProfitOrLoss)" class="fa fa-caret-down"></i>     
-                    </p>
-                    <h2 :class="[+item.ProfitOrLoss > 0? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
-              </div>
-              <ul class="more">
-                  <li class="clearfix">止盈:<span v-text="item.TakeProfit"></span></li>
-                  <li class="clearfix">止损:<span v-text="item.StopLoss"></span></li>
-                  <li class="clearfix">库存费:<span v-text="item.AcrossFee"></span></li>
-                  <li class="clearfix">手续费:<span v-text="item.OrderFee"></span></li>
-                  <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
-                  <li class="clearfix"><button @click="flag = true" >修改止盈止损</button></li>
-              </ul>
-          </li> 
-      </ul>
+        <loading v-if="loadFlag"></loading>
+        <back-load v-if="skip"></back-load>
+        <div class="line"></div>
+        <i-header :headline="headline"></i-header>
+        <ul class="property" v-cloak>
+            <li class="clearfix">当前盈亏<span v-text="property.wolBalance"></span></li>
+            <li class="clearfix">预存款<span v-text="property.fBalance"></span></li>
+            <li class="clearfix">净值<span v-text="(((+property.Balance * 100) + (+property.wolBalance * 100)) / 100).toFixed(2)"></span></li>
+            <li class="clearfix">余额<span v-text="property.Balance"></span></li>
+            <li class="clearfix">预存款比例<span v-text="scale"></span></li>
+        </ul>
+        <div class="line"></div>
+        <div v-if="this.piceLine.length == 0" class="notMore">暂无数据</div>
+        <ul class="piceLine">
+            <li v-for="(item,index) in this.piceLine" :key="index" :class="[showList[index] == false? '':'show']" >
+                <div class="basic" @click="getShow(index)">
+                        <div class="title">
+                            <h3 v-text="item.Name"></h3>
+                            <span>{{item.PayType == 0?'买入':'卖出'}}:{{item.Quantity}}</span>
+                        </div>
+                        <p :class="[iCon(item.Code) == 1? 'red':'blue']">
+                            <span>{{item.CurrentPrice}}</span>
+                            <i class="fa fa-angle-right" style=" color:#999;"></i>
+                            <span v-text="currentPice(item.Code,item.PayType)"></span>
+                            <i v-if="iCon(item.Code) == 1" class="fa fa-caret-up"></i>               
+                            <i v-if="iCon(item.Code) == 2" class="fa fa-caret-down"></i>     
+                        </p>
+                        <h2 :class="[+item.WOL > 0? 'ProfitOrLoss red':'ProfitOrLoss blue']">{{item.WOL || '-'}}</h2>
+                </div>
+                <ul class="more">
+                    <li class="clearfix">止盈:<span v-text="item.TakeProfit"></span></li>
+                    <li class="clearfix">止损:<span v-text="item.StopLoss"></span></li>
+                    <li class="clearfix">库存费:<span v-text="item.AcrossFee"></span></li>
+                    <li class="clearfix">手续费:<span v-text="item.OrderFee"></span></li>
+                    <li class="clearfix"><button @click="closeOut(item.OrderID)">平仓</button></li>
+                    <li class="clearfix"><button @click="flag = true" >修改止盈止损</button></li>
+                </ul>
+            </li> 
+        </ul>
         <div class="order_edit" v-if="flag">
             <div class="inbox">
                 <h2>{{amendMain.Name}}<span>订单号：{{amendMain.OrderSN}}</span></h2>
@@ -91,7 +91,9 @@ export default {
     mounted(){
         this.clock = setInterval(()=>{
             this.holder()
+            
         },1000)
+        
     },
     beforeDestroy(){
         if(this.clock){
@@ -145,10 +147,7 @@ export default {
         }
     },
     methods:{
-        //涨跌小箭头
-        iCon(hnl){
-            return +hnl > 0? true:false
-        },
+
         getShow(id){
             this.pid = id;
             this.amendMain = this.piceLine[id]
@@ -269,27 +268,36 @@ export default {
             this.wsCurr2.onerror = () => {
                 console.log("Error!!");
             };
-      },
-      //获取当前价
-      currentPice(code,PayType){
-          let arr = this.askList
-          for(let i = 0; i <arr.length; i++){
-              switch(PayType){
-                  case 0 :{
-                        if(arr[i]['Code'] == code){
-                            return arr[i]['Ask']
+        },
+        //获取当前价
+        currentPice(code,PayType){
+            let arr = this.askList
+            for(let i = 0; i <arr.length; i++){
+                switch(PayType){
+                    case 0 :{
+                            if(arr[i]['Code'] == code){
+                                return arr[i]['Bid']
+                            }
+                            break
                         }
-                        break
-                    }
-                    case 1 :{
-                        if(arr[i]['Code'] == code){
-                            return arr[i]['Bid']
+                        case 1 :{
+                            if(arr[i]['Code'] == code){
+                                return arr[i]['Ask']
+                            }
                         }
-                    }
-              }
-              
-          }
-      }
+                }
+                
+            }
+        },
+        //涨跌小箭头
+        iCon(code){
+            let arr = this.askList
+            for(let i = 0; i <arr.length; i++){
+                if(arr[i]['Code'] == code){
+                    return arr[i]['return_UpDown']
+                }
+            }
+        },
 
     }
 }

@@ -51,7 +51,7 @@ export default {
             return this.$route.query.details
         },
         heightD(){
-            return window.screen.height - 140 +'px'
+            return document.documentElement.clientHeight - 140 +'px'
         }
     },
     beforeDestroy(){

@@ -177,7 +177,7 @@ export default {
 
             }
             
-            this.wsCurrPrice.onerror = () => {
+            this.wsCurrPrice.onerror = () => { 
                 /*if(typeof layer !='undefined'){
                     layer.open({content:'WS连接服务器失败请稍候再试',skin:'msg',time:2})
                 }*/
