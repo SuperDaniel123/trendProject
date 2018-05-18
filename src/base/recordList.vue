@@ -28,14 +28,15 @@
               <li v-for="item in dataList" :key="item.index">
                 <h2>{{item.CloseTime}} <span v-text="item.Name"></span></h2>
                 <div class="text">
-                    <p class="clearfix">买入价:<i v-text="item.CurrentPrice"></i></p>
-                    <p class="clearfix">卖出价:<i v-text="item.ClosePrice"></i></p>
-                    <p class="clearfix">止损:<i v-text="item.StopLoss"></i></p>
-                    <p class="clearfix">获利:<i v-text="item.TakeProfit"></i></p>
-                    <p class="clearfix">库存费:<i v-text="item.AcrossFee"></i></p>
-                    <p class="clearfix">手续费:<i v-text="item.OrderFee"></i></p>
-                    <p class="clearfix">{{item.PayType == 0?'买入':'卖出'}}:<i>{{item.Quantity}}手</i></p>
-                    <p class="clearfix">结果:<i v-text="item.ProfitOrLoss"></i></p>
+                    <p class="clearfix"><span>买入价:</span><i v-text="item.CurrentPrice"></i></p>
+                    <p class="clearfix"><span>卖出价:</span><i v-text="item.ClosePrice"></i></p>
+                    <p class="clearfix"><span>止损:</span><i v-text="item.StopLoss"></i></p>
+                    <p class="clearfix"><span>获利:</span><i v-text="item.TakeProfit"></i></p>
+                    <p class="clearfix"><span>库存费:</span><i v-text="item.AcrossFee"></i></p>
+                    <p class="clearfix"><span>手续费:</span><i v-text="item.OrderFee"></i></p>
+                    <p class="clearfix"><span>{{item.PayType == 0?'买入':'卖出'}}:</span><i>{{item.Quantity}}手</i></p>
+                    <p class="clearfix"><span>结果:</span><i v-text="item.ProfitOrLoss"></i></p>
+                    <p class="clearfix"><span>注释:</span><i v-text="item.OutStock"></i></p>
                 </div>
               </li>
               <p v-if="!loadIf">没有更多了</p>
@@ -278,6 +279,7 @@ export default {
       flex-wrap:wrap;
       p{
         width:50%;
+        text-align: left;
         padding:0 0.5rem;
         box-sizing: border-box;
         font-size:@font1;
@@ -286,6 +288,9 @@ export default {
         i{
           float: right;
         }
+      }
+      p:nth-last-of-type(1){
+        width:100%;
       }
     }
   }

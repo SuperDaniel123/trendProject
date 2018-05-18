@@ -50,7 +50,7 @@ export default {
             userPhone:localStorage.getItem('userName') || '',
             password:'',
             facility:'iphone',
-            ip:'127.0.0.1',
+            ip:sessionStorage.getItem('ip'),
             //0 是登录，1是忘记密码, 2是注册
             state:0,
             

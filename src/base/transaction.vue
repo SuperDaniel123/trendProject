@@ -273,7 +273,7 @@ export default {
         currentPice(code,PayType){
             let arr = this.askList
             for(let i = 0; i <arr.length; i++){
-                switch(PayType){
+                switch(+PayType){
                     case 0 :{
                             if(arr[i]['Code'] == code){
                                 return arr[i]['Bid']
